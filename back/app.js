@@ -6,14 +6,15 @@ var logger = require('morgan');
 var cors = require("cors");
 const sequelize = require("./database/connect");
 const userRoutes = require('./routes/user.routes');
+const neighborhoodRoutes = require('./routes/neighborhood.routes'); // Añade esta línea
 var indexRouter = require('./routes/index');
 
 const routes = require('./routes');
 
-var usersRouter = require('./routes/user.routes');
-var neighborhoodsRouter = require('./routes/neighborhoods.routes');
 var app = express();
 app.use(express.json());
+app.use(cors()); // Habilita CORS para todas las rutas
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -23,11 +24,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/users', userRoutes);
-app.use('/neighborhoods', neighborhoodsRouter);
 
+// Rutas
+app.use('/users', userRoutes);
+app.use('/neighborhoods', neighborhoodRoutes); // Añade esta línea
 app.use('/', indexRouter);
 
+// Prueba de conexión a la base de datos
+sequelize.authenticate()
+  .then(() => {
+    console.log('Conexión a la base de datos establecida con éxito.');
+  })
+  .catch(err => {
+    console.error('No se pudo conectar a la base de datos:', err);
+  });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -43,9 +53,6 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
-
-
-  
 });
 
 module.exports = app;

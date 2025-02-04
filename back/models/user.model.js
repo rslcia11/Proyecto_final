@@ -39,7 +39,16 @@ const User = sequelize.define('User', {
     phone: {
         type: DataTypes.STRING(20),
         allowNull: false
-    }
+    },
+    password: {
+        type: DataTypes.STRING(20),
+        allowNull: false,
+        validate: {
+          len: [8, 20] // Equivalente al CHECK BETWEEN 8 AND 20
+        }
+      }
+
+    
 }, {
     tableName: 'user', // 🔹 Asegurar que Sequelize use el nombre correcto
     timestamps: false
