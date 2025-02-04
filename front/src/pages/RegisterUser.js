@@ -1,0 +1,155 @@
+import React, { useState, useEffect } from "react";
+import { FaUser, FaLock, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import './RegisterUser.css';
+
+const RegisterUser = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    last_name: "",
+    email: "",
+    idneighborhood: "",
+    phone: "",
+    password: "",
+  });
+  const [neighborhoods, setNeighborhoods] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/neighborhoods")
+      .then((res) => res.json())
+      .then((data) => setNeighborhoods(data))
+      .catch((err) => console.error("Error fetching neighborhoods:", err));
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      // Si el campo es idneighborhood, lo convertimos a número
+      [name]: name === "idneighborhood" ? Number(value) : value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:3000/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      console.log("User created:", data);
+    } catch (error) {
+      console.error("Error creating user:", error);
+    }
+  };
+
+  return (
+    <div className="crear-usuario-container">
+      <h2>Únete a LojaComunidad</h2>
+      <p className="subtitle">Crea tu cuenta y conecta con tu comunidad</p>
+      <form onSubmit={handleSubmit} className="crear-usuario-form">
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="name">
+              <FaUser /> Nombre
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              placeholder="Tu nombre"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="last_name">Apellido</label>
+            <input
+              type="text"
+              id="last_name"
+              name="last_name"
+              value={formData.last_name}
+              onChange={handleChange}
+              required
+              placeholder="Tu apellido"
+            />
+          </div>
+        </div>
+        <div className="form-group">
+          <label htmlFor="email">
+            <FaEnvelope /> Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            placeholder="tu@email.com"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="phone">Teléfono</label>
+          <input
+            type="text"
+            id="phone"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+            placeholder="Tu teléfono"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">
+            <FaLock /> Contraseña
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            placeholder="Crea una contraseña segura"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="idneighborhood">
+            <FaMapMarkerAlt /> Barrio
+          </label>
+          <select
+            id="idneighborhood"
+            name="idneighborhood"
+            value={formData.idneighborhood}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Selecciona tu barrio</option>
+            {/* Usamos n.idneighborhood si ese es el identificador numérico real */}
+            {neighborhoods.map((n) => (
+              <option key={n.idneighborhood} value={n.idneighborhood}>
+                {n.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button type="submit" className="btn-submit">
+          Crear Cuenta
+        </button>
+      </form>
+      <p className="terms-text">
+        Al crear una cuenta, aceptas nuestros{" "}
+        <a href="/terminos">Términos de Servicio</a> y{" "}
+        <a href="/privacidad">Política de Privacidad</a>.
+      </p>
+    </div>
+  );
+};
+
+export default RegisterUser;

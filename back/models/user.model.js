@@ -11,7 +11,7 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING(45),
         allowNull: false
     },
-    last_name: {  // 🔹 Cambiado a last_name para coincidir con la BD
+    last_name: {
         type: DataTypes.STRING(45),
         allowNull: false
     },
@@ -22,19 +22,22 @@ const User = sequelize.define('User', {
     },
     gender: {
         type: DataTypes.STRING(45),
-        allowNull: true
+        allowNull: true,
+        defaultValue: 'Not specified' // 🔹 Valor por defecto
     },
-    idneighborhood: {  // 🔹 Asegurado de que coincide con la BD
+    idneighborhood: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
     latitude: {
-        type: DataTypes.DECIMAL(10, 7),  // 🔹 Tipo de dato corregido
-        allowNull: true
+        type: DataTypes.DECIMAL(10, 7),
+        allowNull: true,
+        defaultValue: 0.0000000 // 🔹 Valor por defecto
     },
     longitude: {
-        type: DataTypes.DECIMAL(10, 8),  // 🔹 Tipo de dato corregido
-        allowNull: true
+        type: DataTypes.DECIMAL(10, 8),
+        allowNull: true,
+        defaultValue: 0.00000000 // 🔹 Valor por defecto
     },
     phone: {
         type: DataTypes.STRING(20),
@@ -44,13 +47,11 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING(20),
         allowNull: false,
         validate: {
-          len: [8, 20] // Equivalente al CHECK BETWEEN 8 AND 20
+          len: [8, 20]
         }
-      }
-
-    
+    }
 }, {
-    tableName: 'user', // 🔹 Asegurar que Sequelize use el nombre correcto
+    tableName: 'user',
     timestamps: false
 });
 

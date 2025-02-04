@@ -25,11 +25,25 @@ const getUserById = async (req, res) => {
 // Crear un nuevo usuario
 const createUser = async (req, res) => {
     try {
-        const { iduser, name, last_name, email, gender, idneighborhood, latitude, longitude, phone, password } = req.body;
-        const newUser = await User.create({ iduser, name, last_name, email, gender, idneighborhood, latitude, longitude, phone, password });
+        const { name, last_name, email, gender, idneighborhood, latitude, longitude, phone, password } = req.body;
+        const newUser = await User.create({ 
+            name, 
+            last_name, 
+            email, 
+            gender, 
+            idneighborhood, 
+            latitude, 
+            longitude, 
+            phone, 
+            password 
+        });
         res.status(201).json(newUser);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error('Error completo:', error); // Para debug
+        res.status(500).json({ 
+            message: 'Error al crear usuario',
+            error: error.message 
+        });
     }
 };
 
