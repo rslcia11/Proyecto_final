@@ -4,7 +4,9 @@ import BarraDeNavegacion from "./components/BarraDeNavegacion";
 import RegisterUser from "./pages/RegisterUser"; // Página de registro de usuarios
 import Home from "./pages/Home"; // Página de inicio (crearemos este archivo)
 import NotFound from "./pages/NotFound"; // Página 404
-
+import Dashboard from './pages/Dashboard';
+import Marketplace from './pages/Marketplace';
+import PublishProduct from './pages/PublishProduct';
 function App() {
   return (
     <Router>
@@ -12,7 +14,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/crear-usuario" element={<RegisterUser />} />
+        <Route path="/dashboard" component={Dashboard} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/marketplace" element={Marketplace} />
+        <Route path="/publish-product" element={<PublishProduct />} />
       </Routes>
     </Router>
   );

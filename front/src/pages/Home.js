@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaUsers, FaNewspaper, FaStore, FaHandshake, FaArrowRight } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import './Home.css';
 
 const Home: React.FC = () => {
@@ -16,16 +17,21 @@ const Home: React.FC = () => {
           <section className="inicio">
             <div className="inicio-content">
               <h1>Conecta con tu comunidad en Loja</h1>
-              <p className="subtitle">Descubre eventos locales, comparte recursos y construye una ciudad mejor juntos</p>
+              <p className="subtitle">
+                Descubre eventos locales, comparte recursos y construye una ciudad mejor juntos
+              </p>
               <div className="cta-buttons">
-                <button className="btn-registro">Únete Gratis</button>
+                {/* Al pulsar este botón se redirige a la creación de usuario */}
+                <Link to="/crear-usuario">
+                  <button className="btn-registro">Únete Gratis</button>
+                </Link>
                 <button className="btn-explorar">
                   Explorar Comunidades <FaArrowRight className="icon-right" />
                 </button>
               </div>
             </div>
             <div className="inicio-image">
-            <img src="/images/image.jpg" alt="Descripción de la imagen" />
+              <img src="/images/image.jpg" alt="Descripción de la imagen" />
             </div>
           </section>
   
@@ -74,12 +80,16 @@ const Home: React.FC = () => {
             <div className="testimonios-grid">
               <div className="testimonio">
                 <img src="/avatar1.jpg" alt="María" className="avatar" />
-                <p>"Gracias a LojaComunidad, organicé una limpieza en mi barrio y conocí a vecinos increíbles."</p>
+                <p>
+                  "Gracias a LojaComunidad, organicé una limpieza en mi barrio y conocí a vecinos increíbles."
+                </p>
                 <span>- María, Barrio Central</span>
               </div>
               <div className="testimonio">
                 <img src="/avatar2.jpg" alt="Juan" className="avatar" />
-                <p>"Vendí mi bicicleta en el marketplace y encontré un grupo de ciclismo local. ¡Genial!"</p>
+                <p>
+                  "Vendí mi bicicleta en el marketplace y encontré un grupo de ciclismo local. ¡Genial!"
+                </p>
                 <span>- Juan, San Sebastián</span>
               </div>
             </div>
@@ -88,7 +98,10 @@ const Home: React.FC = () => {
           <section className="cta">
             <h2>Únete a la comunidad de Loja hoy mismo</h2>
             <p>Más de 10,000 lojanos ya están conectados. ¡No te quedes fuera!</p>
-            <button className="btn-registro">Crear mi cuenta gratis</button>
+            {/* Este botón también redirige a la creación de usuario */}
+            <Link to="/crear-usuario">
+              <button className="btn-registro">Crear mi cuenta gratis</button>
+            </Link>
           </section>
         </main>
   
@@ -116,8 +129,6 @@ const Home: React.FC = () => {
         </footer>
       </div>
     );
-  };
+};
   
-  export default Home;
-  
-  
+export default Home;
