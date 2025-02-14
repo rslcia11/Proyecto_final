@@ -7,7 +7,7 @@ var cors = require("cors");
 const sequelize = require("./database/connect");
 const userRoutes = require('./routes/user.routes');
 const neighborhoodRoutes = require('./routes/neighborhood.routes'); // Añade esta línea
-const marketplaceRoutes = require('./routes/marketplace.routes');
+
 var indexRouter = require('./routes/index');
 
 const routes = require('./routes');
@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Rutas
 app.use('/users', userRoutes);
 app.use('/neighborhoods', neighborhoodRoutes); // Añade esta línea
-app.use('/marketplace', marketplaceRoutes);
+
 
 // Prueba de conexión a la base de datos
 sequelize.authenticate()

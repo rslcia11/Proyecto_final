@@ -70,7 +70,6 @@ const Marketplace = () => {
       ) : (
         <div className="no-products">
           <p>No hay productos publicados en este momento.</p>
-          <p>La ruta Marketplace está funcionando correctamente.</p>
         </div>
       )}
     </div>
