@@ -6,7 +6,8 @@ var logger = require('morgan');
 var cors = require("cors");
 const sequelize = require("./database/connect");
 const userRoutes = require('./routes/user.routes');
-const neighborhoodRoutes = require('./routes/neighborhood.routes'); // Añade esta línea
+const neighborhoodRoutes = require('./routes/neighborhood.routes'); 
+const marketplaceRoutes = require('./routes/marketplace.routes');
 
 var indexRouter = require('./routes/index');
 
@@ -28,8 +29,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Rutas
 app.use('/users', userRoutes);
-app.use('/neighborhoods', neighborhoodRoutes); // Añade esta línea
-
+app.use('/neighborhoods', neighborhoodRoutes); 
+app.use('/marketplace', marketplaceRoutes);
 
 // Prueba de conexión a la base de datos
 sequelize.authenticate()
