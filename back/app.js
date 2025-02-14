@@ -8,6 +8,7 @@ const sequelize = require("./database/connect");
 const userRoutes = require('./routes/user.routes');
 const neighborhoodRoutes = require('./routes/neighborhood.routes'); 
 const marketplaceRoutes = require('./routes/marketplace.routes');
+const postRoutes = require("./routes/post.routes");
 
 var indexRouter = require('./routes/index');
 
@@ -31,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/users', userRoutes);
 app.use('/neighborhoods', neighborhoodRoutes); 
 app.use('/marketplace', marketplaceRoutes);
-
+app.use("/posts", postRoutes);
 // Prueba de conexión a la base de datos
 sequelize.authenticate()
   .then(() => {
