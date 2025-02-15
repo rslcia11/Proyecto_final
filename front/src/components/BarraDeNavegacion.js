@@ -27,8 +27,8 @@ function BarraDeNavegacion() {
         setLoggedUser(data.user);
         setIsLoggedIn(true);
         setIsLoginVisible(false);
-        console.log("Login exitoso, redirigiendo al dashboard...");
-        navigate('/dashboard');
+        console.log("Login exitoso, redirigiendo a su cuenta...");
+        navigate('/denuncias');
       }
     } catch (error) {
       console.error("Error en login:", error);
@@ -63,7 +63,7 @@ function BarraDeNavegacion() {
       <div className="navbar-menu">
         {isLoggedIn ? (
           <>
-            <a href="#denuncias" className="navbar-item">Denuncias</a>
+            <a href="/denuncias" className="navbar-item">Denuncias</a>
             <span className="navbar-divider" />
             <Link to ="/marketplace" className="navbar-item">Negocios</Link>
             <span className="navbar-divider" />
@@ -75,7 +75,7 @@ function BarraDeNavegacion() {
           <>
             <Link to="/" className="navbar-item">Inicio</Link>
             <span className="navbar-divider" />
-            <a href="#denuncias" className="navbar-item">Denuncias</a>
+            <a href="/denuncias" className="navbar-item">Denuncias</a>
             <span className="navbar-divider" />
             <Link to ="/marketplace" className="navbar-item">Negocios</Link>
             <span className="navbar-divider" />

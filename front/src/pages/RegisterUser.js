@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaUser, FaLock, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-import './RegisterUser.css';
+import Swal from "sweetalert2"; // Importamos SweetAlert2
+import "./RegisterUser.css";
 
 const RegisterUser = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const RegisterUser = () => {
     phone: "",
     password: "",
   });
+
   const [neighborhoods, setNeighborhoods] = useState([]);
 
   useEffect(() => {
@@ -24,13 +26,23 @@ const RegisterUser = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      // Si el campo es idneighborhood, lo convertimos a número
       [name]: name === "idneighborhood" ? Number(value) : value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.password.length < 8 || formData.password.length > 20) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "La contraseña debe tener entre 8 y 20 caracteres.",
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:3000/users", {
         method: "POST",
@@ -39,10 +51,41 @@ const RegisterUser = () => {
         },
         body: JSON.stringify(formData),
       });
-      const data = await response.json();
-      console.log("User created:", data);
+
+      if (response.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "Usuario creado exitosamente",
+          text: "✔️",
+          showConfirmButton: false,
+          timer: 2000, // Se cierra automáticamente en 2 segundos
+        });
+
+        setFormData({
+          name: "",
+          last_name: "",
+          email: "",
+          idneighborhood: "",
+          phone: "",
+          password: "",
+        });
+      } else {
+        const errorData = await response.json();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: errorData.message || "No se pudo crear el usuario",
+          confirmButtonText: "Aceptar",
+        });
+      }
     } catch (error) {
       console.error("Error creating user:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Error al crear el usuario. Por favor, intente de nuevo.",
+        confirmButtonText: "Aceptar",
+      });
     }
   };
 
@@ -116,7 +159,9 @@ const RegisterUser = () => {
             value={formData.password}
             onChange={handleChange}
             required
-            placeholder="Crea una contraseña segura"
+            placeholder="Crea una contraseña segura (8-20 caracteres)"
+            minLength="8"
+            maxLength="20"
           />
         </div>
         <div className="form-group">
@@ -131,7 +176,6 @@ const RegisterUser = () => {
             required
           >
             <option value="">Selecciona tu barrio</option>
-            {/* Usamos n.idneighborhood si ese es el identificador numérico real */}
             {neighborhoods.map((n) => (
               <option key={n.idneighborhood} value={n.idneighborhood}>
                 {n.name}

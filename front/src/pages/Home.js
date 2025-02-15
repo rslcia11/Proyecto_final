@@ -8,32 +8,32 @@ const Home: React.FC = () => {
       <div className="pagina-inicio">
         <header className="header">
           <nav>
-            <img src="/logo-lojacomunidad.svg" alt="LojaComunidad Logo" className="logo" />
+            <img src="/loja_comunidad_logo.jpeg" alt="LojaComunidad Logo" className="logo" />
             <button className="btn-login">Iniciar Sesión</button>
           </nav>
         </header>
-  
         <main>
-          <section className="inicio">
-            <div className="inicio-content">
-              <h1>Conecta con tu comunidad en Loja</h1>
-              <p className="subtitle">
-                Descubre eventos locales, comparte recursos y construye una ciudad mejor juntos
-              </p>
-              <div className="cta-buttons">
-                {/* Al pulsar este botón se redirige a la creación de usuario */}
-                <Link to="/crear-usuario">
-                  <button className="btn-registro">Únete Gratis</button>
-                </Link>
-                <button className="btn-explorar">
-                  Explorar Comunidades <FaArrowRight className="icon-right" />
-                </button>
-              </div>
-            </div>
-            <div className="inicio-image">
-              <img src="/images/image.jpg" alt="Descripción de la imagen" />
-            </div>
-          </section>
+      <section className="inicio">
+        <div className="inicio-content">
+          <h1>Conecta con tu comunidad en Loja</h1>
+          <p className="subtitle">
+            Descubre eventos locales, comparte recursos y construye una ciudad mejor juntos
+          </p>
+          <div className="cta-buttons">
+            <Link to="/crear-usuario">
+              <button className="btn-registro">Únete Gratis</button>
+            </Link>
+            <Link to="/denuncias">
+              <button className="btn-registro">Explorar la comunidad</button>
+            </Link>
+          </div>
+        </div>
+        <div className="inicio-image">
+          <img src="/loja_comunidad_logo.jpeg" alt="LojaComunidad Logo" className="logo" />
+        </div>
+      </section>
+  
+
   
           <section className="beneficios">
             <h2>¿Por qué unirte a LojaComunidad?</h2>
@@ -98,7 +98,6 @@ const Home: React.FC = () => {
           <section className="cta">
             <h2>Únete a la comunidad de Loja hoy mismo</h2>
             <p>Más de 10,000 lojanos ya están conectados. ¡No te quedes fuera!</p>
-            {/* Este botón también redirige a la creación de usuario */}
             <Link to="/crear-usuario">
               <button className="btn-registro">Crear mi cuenta gratis</button>
             </Link>
