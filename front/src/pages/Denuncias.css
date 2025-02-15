@@ -1,127 +1,171 @@
 /* Denuncias.css */
-.denuncias-page {
-    display: flex;
-    min-height: 100vh;
-    background-color: #f5f6fa;
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --background-color: #f8f9fa;
+    --text-color: #333;
+    --light-gray: #e0e0e0;
+    --white: #ffffff;
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
-  .sidebar {
-    width: 250px;
-    padding: 20px;
-    background-color: white;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    border-right: 1px solid #e1e8ed;
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
   }
   
-  .create-post-button {
-    width: 100%;
-    padding: 12px 20px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .create-post-button:hover {
-    background-color: #2980b9;
-  }
-  
-  .login-prompt {
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    text-align: center;
-    color: #34495e;
-    font-size: 0.9rem;
-    line-height: 1.4;
-  }
-  
-  .denuncias-feed {
-    flex: 1;
-    padding: 20px;
+  .denuncias-container {
     max-width: 800px;
     margin: 0 auto;
+    padding: 20px;
   }
   
-  .denuncias-feed h1 {
+  .denuncias-header {
+    text-align: center;
     margin-bottom: 30px;
-    color: #2c3e50;
+  }
+  
+  .denuncias-header h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+    color: #666;
+  }
+  
+  .denuncias-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background-color: var(--white);
+    border-radius: 25px;
+    padding: 5px 15px;
+    flex-grow: 1;
+    margin-right: 15px;
+    box-shadow: var(--shadow);
+  }
+  
+  .search-icon {
+    color: var(--primary-color);
+    margin-right: 10px;
+  }
+  
+  .search-bar input {
+    border: none;
+    background: transparent;
+    flex-grow: 1;
+    font-size: 1rem;
+    padding: 8px 0;
+  }
+  
+  .search-bar input:focus {
+    outline: none;
+  }
+  
+  .btn-create {
+    background-color: var(--secondary-color);
+    color: var(--white);
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    box-shadow: var(--shadow);
+  }
+  
+  .btn-create:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+  }
+  
+  .btn-create svg {
+    margin-right: 8px;
+  }
+  
+  .denuncias-list {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
   
   .denuncia-card {
-    background-color: white;
-    border-radius: 10px;
+    background-color: var(--white);
+    border-radius: 8px;
     padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
+    transition: transform 0.3s;
   }
   
-  .denuncia-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .denuncia-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .denuncia-card h3 {
+    font-size: 1.3rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+  }
+  
+  .denuncia-card p {
+    color: #666;
     margin-bottom: 15px;
   }
   
-  .user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-  }
-  
-  .fecha {
-    color: #7f8c8d;
-    font-size: 0.9rem;
-  }
-  
-  .estado {
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-  }
-  
-  .estado.pending {
-    background-color: #ffeaa7;
-    color: #d35400;
-  }
-  
-  .estado.active {
-    background-color: #55efc4;
-    color: #00b894;
-  }
-  
-  .imagenes-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 10px;
-    margin: 15px 0;
-  }
-  
-  .denuncia-imagen {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  
-  .denuncia-footer {
+  .denuncia-meta {
     display: flex;
     justify-content: space-between;
-    margin-top: 15px;
-    color: #7f8c8d;
+    color: #999;
     font-size: 0.9rem;
+    margin-bottom: 15px;
+  }
+  
+  .location, .date {
+    display: flex;
+    align-items: center;
+  }
+  
+  .location svg, .date svg {
+    margin-right: 5px;
+  }
+  
+  .denuncia-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .btn-action {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    border: none;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+  }
+  
+  .btn-action:hover {
+    background-color: #d0d0d0;
+  }
+  
+  .btn-action svg {
+    margin-right: 5px;
   }
   
   .modal-overlay {
@@ -130,7 +174,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -138,89 +182,125 @@
   }
   
   .modal-content {
-    background-color: white;
+    background-color: var(--white);
     padding: 30px;
-    border-radius: 10px;
+    border-radius: 8px;
     width: 90%;
-    max-width: 600px;
-    position: relative;
+    max-width: 500px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
-  .close-modal {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 24px;
-    background: none;
-    border: none;
-    cursor: pointer;
+  .modal-content h2 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    text-align: center;
   }
   
-  .denuncia-form {
+  .crear-denuncia-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
   }
   
   .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    margin-bottom: 20px;
   }
   
   .form-group label {
-    font-weight: 600;
-    color: #2d3436;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--text-color);
   }
   
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+  .form-group input[type="text"],
+  .form-group input[type="url"],
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--light-gray);
+    border-radius: 4px;
     font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+  
+  .form-group input[type="text"]:focus,
+  .form-group input[type="url"]:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
   }
   
   .form-group textarea {
-    min-height: 120px;
+    height: 120px;
     resize: vertical;
   }
   
-  .submit-button {
-    background-color: #3498db;
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
   }
   
-  .submit-button:hover {
+  .btn-submit,
+  .btn-cancel {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+  }
+  
+  .btn-submit {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+  }
+  
+  .btn-submit:hover {
     background-color: #2980b9;
+    transform: translateY(-2px);
+  }
+  
+  .btn-cancel {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    border: none;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #d0d0d0;
+    transform: translateY(-2px);
   }
   
   @media (max-width: 768px) {
-    .denuncias-page {
-      flex-direction: column;
-    }
-  
-    .sidebar {
-      width: 100%;
-      height: auto;
-      position: static;
-      border-right: none;
-      border-bottom: 1px solid #e1e8ed;
-    }
-  
-    .denuncias-feed {
+    .denuncias-container {
       padding: 15px;
+    }
+  
+    .denuncias-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .search-bar {
+      margin-right: 0;
+      margin-bottom: 15px;
+    }
+  
+    .btn-create {
+      width: 100%;
     }
   
     .modal-content {
       width: 95%;
       padding: 20px;
+    }
+  
+    .denuncias-list {
+      grid-template-columns: 1fr;
     }
   }

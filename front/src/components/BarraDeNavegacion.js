@@ -1,34 +1,47 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import './BarraDeNavegacion.css';
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "./BarraDeNavegacion.css";
 
 function BarraDeNavegacion() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoginVisible, setIsLoginVisible] = useState(false);
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
   const [loggedUser, setLoggedUser] = useState(null);
   const loginFormRef = useRef(null);
   const navigate = useNavigate();
 
+  // Cargar usuario desde localStorage al montar el componente
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+
+    if (token && user) {
+      setIsLoggedIn(true);
+      setLoggedUser(JSON.parse(user));
+    }
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/users/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("http://localhost:3000/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: loginEmail, password: loginPassword }),
       });
       const data = await response.json();
+
       if (!response.ok) {
-        alert(data.error || 'Error en el login');
+        alert(data.error || "Error en el login");
       } else {
-        localStorage.setItem('token', data.token);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user)); // Guardar usuario
         setLoggedUser(data.user);
         setIsLoggedIn(true);
         setIsLoginVisible(false);
         console.log("Login exitoso, redirigiendo a su cuenta...");
-        navigate('/denuncias');
+        navigate("/denuncias");
       }
     } catch (error) {
       console.error("Error en login:", error);
@@ -38,10 +51,11 @@ function BarraDeNavegacion() {
 
   const toggleLoginForm = () => {
     if (isLoggedIn) {
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
+      localStorage.removeItem("user"); // Eliminar usuario almacenado
       setIsLoggedIn(false);
       setLoggedUser(null);
-      navigate('/');
+      navigate("/");
     } else {
       setIsLoginVisible((prev) => !prev);
     }
@@ -54,8 +68,8 @@ function BarraDeNavegacion() {
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isLoginVisible]);
 
   return (
@@ -63,9 +77,13 @@ function BarraDeNavegacion() {
       <div className="navbar-menu">
         {isLoggedIn ? (
           <>
-            <a href="/denuncias" className="navbar-item">Denuncias</a>
+            <Link to="/denuncias" className="navbar-item">
+              Denuncias
+            </Link>
             <span className="navbar-divider" />
-            <Link to ="/marketplace" className="navbar-item">Negocios</Link>
+            <Link to="/marketplace" className="navbar-item">
+              Negocios
+            </Link>
             <span className="navbar-divider" />
             <button onClick={toggleLoginForm} className="navbar-item">
               Cerrar sesión
@@ -73,13 +91,21 @@ function BarraDeNavegacion() {
           </>
         ) : (
           <>
-            <Link to="/" className="navbar-item">Inicio</Link>
+            <Link to="/" className="navbar-item">
+              Inicio
+            </Link>
             <span className="navbar-divider" />
-            <a href="/denuncias" className="navbar-item">Denuncias</a>
+            <Link to="/denuncias" className="navbar-item">
+              Denuncias
+            </Link>
             <span className="navbar-divider" />
-            <Link to ="/marketplace" className="navbar-item">Negocios</Link>
+            <Link to="/marketplace" className="navbar-item">
+              Negocios
+            </Link>
             <span className="navbar-divider" />
-            <Link to="/crear-usuario" className="navbar-item">Crear Usuario</Link>
+            <Link to="/crear-usuario" className="navbar-item">
+              Crear Usuario
+            </Link>
             <span className="navbar-divider" />
             <button onClick={toggleLoginForm} className="navbar-item">
               Ingresar
@@ -90,9 +116,7 @@ function BarraDeNavegacion() {
 
       <div className="navbar-right">
         {isLoggedIn ? (
-          <span className="welcome-message">
-            Bienvenido, {loggedUser ? loggedUser.name : 'Usuario'}
-          </span>
+          <span className="welcome-message">Bienvenido, {loggedUser ? loggedUser.name : "Usuario"}</span>
         ) : (
           isLoginVisible && (
             <div className="login-form-overlay">
