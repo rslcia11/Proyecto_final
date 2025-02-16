@@ -8,6 +8,8 @@ const Denuncias = () => {
   const [neighborhoods, setNeighborhoods] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Verificar autenticación
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -20,22 +22,31 @@ const Denuncias = () => {
   useEffect(() => {
     fetchDenuncias();
     fetchNeighborhoods();
+    checkAuthStatus();
+    console.log("Token en LocalStorage:", localStorage.getItem("userToken"));
+    console.log("Estado de autenticación:", isAuthenticated);
   }, []);
 
+  const checkAuthStatus = () => {
+    const userToken = localStorage.getItem("userToken"); // Verifica si hay token en localStorage
+    console.log("Token en LocalStorage:", userToken);
+    setIsAuthenticated(!!userToken); // Si hay token, está autenticado
+  };
+
   const fetchDenuncias = async () => {
-    // ... (mismo código que antes)
+    // Aquí iría tu lógica para obtener denuncias
   };
 
   const fetchNeighborhoods = async () => {
-    // ... (mismo código que antes)
+    // Aquí iría tu lógica para obtener barrios
   };
 
   const handleChange = (e) => {
-    // ... (mismo código que antes)
+    // Aquí iría tu lógica para manejar cambios en el formulario
   };
 
   const handleSubmit = async (e) => {
-    // ... (mismo código que antes)
+    // Aquí iría tu lógica para manejar el envío del formulario
   };
 
   const filteredDenuncias = denuncias.filter(
@@ -61,9 +72,15 @@ const Denuncias = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <button className="btn-create" onClick={() => setShowModal(true)}>
-          <FaPlus /> Crear Publicación
-        </button>
+
+        {/* Mostrar botón solo si el usuario está autenticado */}
+        {isAuthenticated ? (
+          <button className="btn-create" onClick={() => setShowModal(true)}>
+            <FaPlus /> Crear Publicación
+          </button>
+        ) : (
+          <p className="warning-message">Inicia sesión para crear una denuncia.</p>
+        )}
       </div>
 
       <div className="denuncias-list">
