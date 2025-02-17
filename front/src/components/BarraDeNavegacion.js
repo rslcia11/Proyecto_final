@@ -11,9 +11,8 @@ function BarraDeNavegacion() {
   const loginFormRef = useRef(null);
   const navigate = useNavigate();
 
-  // Cargar usuario desde localStorage al montar el componente
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("userToken"); 
     const user = localStorage.getItem("user");
 
     if (token && user) {
@@ -24,23 +23,23 @@ function BarraDeNavegacion() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+  
     try {
       const response = await fetch("http://localhost:3000/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+        body: JSON.stringify({ email: loginEmail, password: loginPassword }), // 🔹 Corrección aquí
       });
+  
       const data = await response.json();
-
+  
       if (!response.ok) {
         alert(data.error || "Error en el login");
       } else {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user)); // Guardar usuario
-        setLoggedUser(data.user);
+        localStorage.setItem("userToken", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user)); 
         setIsLoggedIn(true);
-        setIsLoginVisible(false);
-        console.log("Login exitoso, redirigiendo a su cuenta...");
+        setLoggedUser(data.user);
         navigate("/denuncias");
       }
     } catch (error) {
@@ -48,11 +47,11 @@ function BarraDeNavegacion() {
       alert("Error de conexión");
     }
   };
-
+  
   const toggleLoginForm = () => {
     if (isLoggedIn) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user"); // Eliminar usuario almacenado
+      localStorage.removeItem("userToken"); 
+      localStorage.removeItem("user"); 
       setIsLoggedIn(false);
       setLoggedUser(null);
       navigate("/");

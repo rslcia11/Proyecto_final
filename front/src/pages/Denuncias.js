@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { FaExclamationTriangle, FaMapMarkerAlt, FaCamera, FaVideo, FaSearch, FaPlus, FaComments, FaThumbsUp } from "react-icons/fa";
-
 import "./Denuncias.css";
 
 const Denuncias = () => {
@@ -23,32 +22,96 @@ const Denuncias = () => {
     fetchDenuncias();
     fetchNeighborhoods();
     checkAuthStatus();
-    console.log("Token en LocalStorage:", localStorage.getItem("userToken"));
-    console.log("Estado de autenticación:", isAuthenticated);
   }, []);
 
   const checkAuthStatus = () => {
-    const userToken = localStorage.getItem("userToken"); // Verifica si hay token en localStorage
-    console.log("Token en LocalStorage:", userToken);
-    setIsAuthenticated(!!userToken); // Si hay token, está autenticado
+    const userToken = localStorage.getItem("userToken");
+    setIsAuthenticated(!!userToken);
   };
 
   const fetchDenuncias = async () => {
-    // Aquí iría tu lógica para obtener denuncias
+    try {
+      const response = await fetch("http://localhost:3000/posts");
+      if (!response.ok) {
+        throw new Error("Error al obtener las denuncias");
+      }
+      const data = await response.json();
+      setDenuncias(data); 
+    } catch (error) {
+      console.error("Error al cargar denuncias:", error);
+    }
   };
+  
 
   const fetchNeighborhoods = async () => {
-    // Aquí iría tu lógica para obtener barrios
+    try {
+      const response = await fetch("http://localhost:3000/neighborhoods"); 
+      if (!response.ok) {
+        throw new Error("Error al obtener los barrios");
+      }
+      const data = await response.json();
+      setNeighborhoods(data);
+    } catch (error) {
+      console.error("Error al cargar barrios:", error);
+    }
   };
 
+
   const handleChange = (e) => {
-    // Aquí iría tu lógica para manejar cambios en el formulario
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
-    // Aquí iría tu lógica para manejar el envío del formulario
+    e.preventDefault();
+  
+    const userToken = localStorage.getItem("userToken"); 
+    const user = JSON.parse(localStorage.getItem("user")); 
+  
+    if (!userToken || !user) {
+      alert("Error: Usuario no autenticado.");
+      return;
+    }
+  
+    console.log("User data:", user);
+    console.log("User ID enviado:", user.iduser); 
+    
+    const denunciaData = {
+      ...formData,
+      user_id: user.iduser
+    };
+  
+    try {
+      const response = await fetch("http://localhost:3000/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${userToken}`
+        },
+        body: JSON.stringify(denunciaData),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        alert(`Error al crear la denuncia: ${data.error || "Inténtalo de nuevo."}`);
+      } else {
+        alert("Denuncia creada correctamente.");
+        setShowModal(false);
+      }
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
+      alert("Error al conectar con el servidor.");
+    }
   };
-
+  
+  
+  
+  
+  
   const filteredDenuncias = denuncias.filter(
     (denuncia) =>
       denuncia.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -164,7 +227,6 @@ const Denuncias = () => {
                   type="file"
                   id="image_urls"
                   name="image_urls"
-                  onChange={handleChange}
                   multiple
                   accept="image/*"
                 />
