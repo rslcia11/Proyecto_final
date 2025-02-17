@@ -1,32 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import './Marketplace.css'; // Asegúrate de tener los estilos definidos
+import React, { useEffect, useState } from "react";
+import "./Marketplace.css"; // Asegúrate de tener los estilos definidos
 
 const Marketplace = () => {
   const [marketItems, setMarketItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem('token');
+  const [error, setError] = useState(null);
+  const token = localStorage.getItem("userToken"); // Cambiado a "userToken"
 
   useEffect(() => {
     if (!token) {
-      setLoading(false); // Evita que quede en estado de carga infinita si no hay token
+      setLoading(false);
       return;
     }
 
     const fetchMarketItems = async () => {
       try {
-        const response = await fetch('http://localhost:3000/marketplace', {
+        const response = await fetch("http://localhost:3000/marketplace", {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
+
         if (!response.ok) {
-          throw new Error('Error al obtener los productos');
+          throw new Error("Error al obtener los productos");
         }
+
         const data = await response.json();
         setMarketItems(data);
       } catch (error) {
-        console.error(error);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -43,9 +46,7 @@ const Marketplace = () => {
     return (
       <div className="marketplace-container">
         <h2>Marketplace</h2>
-        <p>
-          Necesitas crear una cuenta para poder ver, comprar y vender algún producto.
-        </p>
+        <p>Necesitas crear una cuenta para ver, comprar y vender productos.</p>
       </div>
     );
   }
@@ -53,17 +54,22 @@ const Marketplace = () => {
   return (
     <div className="marketplace-container">
       <h2>Marketplace</h2>
-      {marketItems.length > 0 ? (
+
+      {error ? (
+        <div className="error-message">
+          <p>{error}</p>
+        </div>
+      ) : marketItems.length > 0 ? (
         <div className="marketplace-items">
           {marketItems.map((item) => (
             <div key={item.idmarketplace} className="marketplace-item">
-              <h3>{item.title || item.description}</h3>
-              <img 
-                src={item.photoUrl || item.filePath || '/placeholder.jpg'} 
-                alt={item.title || 'Producto'} 
+              <h3>{item.title || item.description || "Sin título"}</h3>
+              <img
+                src={item.photoUrl || item.filePath || "/default-product.jpg"}
+                alt={item.title || "Producto"}
                 className="marketplace-image"
               />
-              <p>Precio: ${item.price}</p>
+              <p>Precio: ${item.price || "Consultar"}</p>
             </div>
           ))}
         </div>
