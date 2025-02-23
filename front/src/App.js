@@ -7,6 +7,7 @@ import NotFound from "./pages/NotFound"; // Página 404
 import Dashboard from './pages/Dashboard';
 import Marketplace from './pages/Marketplace';
 import Denuncias from "./pages/Denuncias";
+import TermsAndConditions from './components/TermsAndConditions';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/denuncias" element={<Denuncias />} />
+        <Route path="/terms" element={<TermsAndConditions />} />
       </Routes>
     </Router>
   );

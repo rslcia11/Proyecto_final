@@ -9,4 +9,5 @@ router.use('/users', userRoutes);
 router.use('/neighborhoods', neighborhoodRoutes);
 router.use('/marketplace',marketplaceRoutes);
 
+
 module.exports = router;

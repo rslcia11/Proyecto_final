@@ -1,122 +1,210 @@
-import React, { useState, useEffect } from "react";
-import { FaExclamationTriangle, FaMapMarkerAlt, FaCamera, FaVideo, FaSearch, FaPlus, FaComments, FaThumbsUp } from "react-icons/fa";
-import "./Denuncias.css";
+"use client"
+
+import { useState, useEffect } from "react"
+import {
+  FaExclamationTriangle,
+  FaMapMarkerAlt,
+  FaCamera,
+  FaVideo,
+  FaSearch,
+  FaPlus,
+  FaComments,
+  FaThumbsUp,
+  FaTimes,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa"
+import "./Denuncias.css"
 
 const Denuncias = () => {
-  const [denuncias, setDenuncias] = useState([]);
-  const [neighborhoods, setNeighborhoods] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Verificar autenticación
+  const [denuncias, setDenuncias] = useState([])
+  const [neighborhoods, setNeighborhoods] = useState([])
+  const [searchTerm, setSearchTerm] = useState("")
+  const [showModal, setShowModal] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     post_type: "complaint",
     neighborhood_id: "",
-    image_urls: [],
+    image_urls: "",
     video_url: "",
-  });
+  })
 
   useEffect(() => {
-    fetchDenuncias();
-    fetchNeighborhoods();
-    checkAuthStatus();
-  }, []);
+    fetchDenuncias()
+    fetchNeighborhoods()
+    checkAuthStatus()
+  }, [])
 
   const checkAuthStatus = () => {
-    const userToken = localStorage.getItem("userToken");
-    setIsAuthenticated(!!userToken);
-  };
+    const userToken = localStorage.getItem("userToken")
+    setIsAuthenticated(!!userToken)
+  }
 
   const fetchDenuncias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/posts");
+      const response = await fetch("http://localhost:3000/posts")
       if (!response.ok) {
-        throw new Error("Error al obtener las denuncias");
+        throw new Error("Error al obtener las denuncias")
       }
-      const data = await response.json();
-      setDenuncias(data); 
+      const data = await response.json()
+      setDenuncias(data)
     } catch (error) {
-      console.error("Error al cargar denuncias:", error);
+      console.error("Error al cargar denuncias:", error)
     }
-  };
-  
+  }
 
   const fetchNeighborhoods = async () => {
     try {
-      const response = await fetch("http://localhost:3000/neighborhoods"); 
+      const response = await fetch("http://localhost:3000/neighborhoods")
       if (!response.ok) {
-        throw new Error("Error al obtener los barrios");
+        throw new Error("Error al obtener los barrios")
       }
-      const data = await response.json();
-      setNeighborhoods(data);
+      const data = await response.json()
+      setNeighborhoods(data)
     } catch (error) {
-      console.error("Error al cargar barrios:", error);
+      console.error("Error al cargar barrios:", error)
     }
-  };
-
+  }
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
-    }));
-  };
+    }))
+  }
+
+  const handleImageChange = async (e) => {
+    const files = Array.from(e.target.files)
+    if (files.length === 0) return
+
+    setIsSubmitting(true)
+    const userToken = localStorage.getItem("userToken")
+
+    try {
+      const uploadPromises = files.map(async (file) => {
+        const formData = new FormData()
+        formData.append("file", file)
+
+        const response = await fetch("http://localhost:3000/upload", {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.error || `Error al subir ${file.name}`)
+        }
+
+        const data = await response.json()
+        return data.url
+      })
+
+      const imageUrls = await Promise.all(uploadPromises)
+
+      setFormData((prev) => ({
+        ...prev,
+        image_urls: imageUrls.join(","),
+      }))
+
+      alert("Imágenes subidas correctamente")
+    } catch (error) {
+      console.error("Error al subir las imágenes:", error)
+      alert(`Error al subir las imágenes: ${error.message}`)
+      e.target.value = ""
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    const userToken = localStorage.getItem("userToken"); 
-    const user = JSON.parse(localStorage.getItem("user")); 
-  
+    e.preventDefault()
+
+    const userToken = localStorage.getItem("userToken")
+    const user = JSON.parse(localStorage.getItem("user"))
+
     if (!userToken || !user) {
-      alert("Error: Usuario no autenticado.");
-      return;
+      alert("Error: Usuario no autenticado.")
+      return
     }
-  
-    console.log("User data:", user);
-    console.log("User ID enviado:", user.iduser); 
-    
-    const denunciaData = {
-      ...formData,
-      user_id: user.iduser
-    };
-  
+
+    if (isSubmitting) {
+      alert("Por favor espere mientras se suben las imágenes.")
+      return
+    }
+
     try {
+      const denunciaData = {
+        ...formData,
+        user_id: user.iduser,
+        image_urls: formData.image_urls || "",
+      }
+
       const response = await fetch("http://localhost:3000/posts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${userToken}`
+          Authorization: `Bearer ${userToken}`,
         },
         body: JSON.stringify(denunciaData),
-      });
-  
-      const data = await response.json();
-  
+      })
+
+      const data = await response.json()
+
       if (!response.ok) {
-        alert(`Error al crear la denuncia: ${data.error || "Inténtalo de nuevo."}`);
-      } else {
-        alert("Denuncia creada correctamente.");
-        setShowModal(false);
+        throw new Error(data.error || "Error al crear la denuncia")
       }
+
+      alert("Denuncia creada correctamente.")
+      setShowModal(false)
+      fetchDenuncias()
+
+      setFormData({
+        title: "",
+        description: "",
+        post_type: "complaint",
+        neighborhood_id: "",
+        image_urls: "",
+        video_url: "",
+      })
     } catch (error) {
-      console.error("Error en la solicitud:", error);
-      alert("Error al conectar con el servidor.");
+      console.error("Error en la solicitud:", error)
+      alert(error.message || "Error al conectar con el servidor.")
     }
-  };
-  
-  
-  
-  
-  
+  }
+
   const filteredDenuncias = denuncias.filter(
     (denuncia) =>
       denuncia.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      denuncia.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      denuncia.description.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
+
+  const handleImageClick = (urls, index) => {
+    setSelectedImage(urls.split(","))
+    setCurrentImageIndex(index)
+  }
+
+  const handleCloseImageModal = () => {
+    setSelectedImage(null)
+    setCurrentImageIndex(0)
+  }
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : selectedImage.length - 1))
+  }
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex < selectedImage.length - 1 ? prevIndex + 1 : 0))
+  }
 
   return (
     <div className="denuncias-container">
@@ -136,7 +224,6 @@ const Denuncias = () => {
           />
         </div>
 
-        {/* Mostrar botón solo si el usuario está autenticado */}
         {isAuthenticated ? (
           <button className="btn-create" onClick={() => setShowModal(true)}>
             <FaPlus /> Crear Publicación
@@ -149,22 +236,37 @@ const Denuncias = () => {
       <div className="denuncias-list">
         {filteredDenuncias.map((denuncia) => (
           <div key={denuncia.id} className="denuncia-card">
-            <h3>{denuncia.title}</h3>
-            <p>{denuncia.description}</p>
-            <div className="denuncia-meta">
-              <span className="location">
-                <FaMapMarkerAlt />
-                {neighborhoods.find(n => n.idneighborhood === denuncia.neighborhood_id)?.name || "Barrio desconocido"}
-              </span>
+            <div className="denuncia-header">
+              <h3>{denuncia.title}</h3>
               <span className="date">{new Date(denuncia.created_at).toLocaleDateString()}</span>
             </div>
-            <div className="denuncia-actions">
-              <button className="btn-action">
-                <FaThumbsUp /> 0 Apoyos
-              </button>
-              <button className="btn-action">
-                <FaComments /> 0 Comentarios
-              </button>
+            <p className="denuncia-description">{denuncia.description}</p>
+            {denuncia.image_urls && (
+              <div
+                className={`denuncia-images-container ${denuncia.image_urls.split(",").length === 1 ? "single-image" : ""}`}
+              >
+                {denuncia.image_urls.split(",").map((url, index, array) => (
+                  <div key={index} className="denuncia-image-wrapper">
+                    <img
+                      src={url || "/placeholder.svg"}
+                      alt={`Imagen ${index + 1} de la denuncia`}
+                      className="denuncia-image"
+                      onClick={() => handleImageClick(denuncia.image_urls, index)}
+                    />
+                    {array.length > 1 && index === 0 && (
+                      <span className="denuncia-image-count">{array.length} imágenes</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="denuncia-footer">
+              <span className="location">
+                <FaMapMarkerAlt />
+                {neighborhoods.find((n) => n.idneighborhood === denuncia.neighborhood_id)?.name || "Barrio desconocido"}
+              </span>
+              <div className="denuncia-actions">
+              </div>
             </div>
           </div>
         ))}
@@ -173,6 +275,9 @@ const Denuncias = () => {
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-modal" onClick={() => setShowModal(false)}>
+              <FaTimes />
+            </button>
             <h2>Crear Nueva Denuncia</h2>
             <form onSubmit={handleSubmit} className="crear-denuncia-form">
               <div className="form-group">
@@ -229,7 +334,9 @@ const Denuncias = () => {
                   name="image_urls"
                   multiple
                   accept="image/*"
+                  onChange={handleImageChange}
                 />
+                {isSubmitting && <p className="upload-status">Subiendo imágenes...</p>}
               </div>
               <div className="form-group">
                 <label htmlFor="video_url">
@@ -245,19 +352,45 @@ const Denuncias = () => {
                 />
               </div>
               <div className="form-actions">
-                <button type="submit" className="btn-submit">
-                  Crear Denuncia
-                </button>
-                <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>
-                  Cancelar
+                <button type="submit" className="btn-submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Subiendo..." : "Crear Denuncia"}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
-    </div>
-  );
-};
 
-export default Denuncias;
+      {selectedImage && (
+        <div className="image-modal-overlay" onClick={handleCloseImageModal}>
+          <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-modal" onClick={handleCloseImageModal}>
+              <FaTimes />
+            </button>
+            <img
+              src={selectedImage[currentImageIndex] || "/placeholder.svg"}
+              alt={`Imagen ${currentImageIndex + 1} de la denuncia`}
+              className="full-size-image"
+            />
+            {selectedImage.length > 1 && (
+              <div className="image-navigation">
+                <button onClick={handlePrevImage} className="nav-button prev">
+                  <FaChevronLeft />
+                </button>
+                <span className="image-counter">
+                  {currentImageIndex + 1} / {selectedImage.length}
+                </span>
+                <button onClick={handleNextImage} className="nav-button next">
+                  <FaChevronRight />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default Denuncias
+

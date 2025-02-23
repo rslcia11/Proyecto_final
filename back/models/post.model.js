@@ -28,11 +28,11 @@ const Post = sequelize.define("Post", {
         allowNull: false
     },
     image_urls: {
-        type: DataTypes.JSON,
+        type: DataTypes.TEXT,
         allowNull: true
     },
     video_url: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.TEXT,
         allowNull: true
     },
     created_at: {
