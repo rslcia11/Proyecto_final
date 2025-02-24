@@ -1,130 +1,148 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
-/* Estilos principales para la barra de navegación */
 .navbar {
-    display: flex; /* Alinea los elementos horizontalmente */
-    justify-content: center; /* Centra los elementos horizontalmente */
-    align-items: center; /* Centra los elementos verticalmente */
-    background-color: #3498db; /* Color de fondo rojo vibrante */
-    padding: 15px 30px; /* Espaciado interno de la barra */
-    position: fixed; /* Mantiene la barra fija en la parte superior */
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000; /* Asegura que la barra esté sobre otros elementos */
-    box-shadow: 0 4px 12px rgba(126, 73, 73, 0.1); /* Sombra para darle profundidad */
-    font-family: 'Poppins', sans-serif; /* Fuente moderna */
+  background-color: #002b7f;
+  padding: 15px 40px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Poppins", sans-serif;
 }
 
-/* Contenedor para los ítems del menú dentro de la barra */
-.navbar-menu {
-    display: flex; /* Alinea los ítems horizontalmente */
-    align-items: center; /* Alinea los ítems verticalmente */
-    width: 100%; /* Ocupa todo el ancho disponible */
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  width: 100%;
 }
 
-/* Estilos generales para cada ítem de la barra de navegación */
+.navbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 40px;
+}
+
+.navbar-right {
+  margin-left: auto; /* Empuja el botón completamente a la derecha */
+}
+
 .navbar-item {
-    flex: 1; /* Asegura que cada ítem ocupe el mismo espacio */
-    text-align: center; /* Centra el texto dentro de cada ítem */
-    color: white; /* Color de texto claro */
-    text-decoration: none; /* Elimina subrayados en los enlaces */
-    font-size: 18px; /* Tamaño de fuente */
-    padding: 10px 0; /* Espaciado interno en los ítems */
-    transition: background 0.3s ease, transform 0.2s ease; /* Suaviza los cambios de color y posición */
-    font-weight: 600; /* Negrita para un diseño destacado */
-    border-radius: 20px; /* Bordes redondeados */
-    cursor: pointer; /* Cambia el cursor al pasar por encima */
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
-/* Efecto hover para los ítems de la barra */
 .navbar-item:hover {
-    background-color: #90bae4; /* Cambia el fondo al pasar el ratón */
-    transform: translateY(-3px); /* Eleva ligeramente el ítem */
-    /* Cambia el color del texto a blanco */
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
 }
 
-/* Barra divisora entre los ítems */
-.navbar-divider {
-    width: 1px; /* Ancho de la barra divisora */
-    height: 25px; /* Alto de la barra */
-    align-self: center; /* Centra la barra divisora verticalmente */
-    /* Color claro para la barra */
+.nav-icon {
+  font-size: 20px;
+  margin-right: 8px;
 }
 
-/* Fondo semitransparente cuando el formulario de login está visible */
-.login-form-overlay {
-    position: fixed; /* Cubre toda la pantalla */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4); /* Fondo oscuro semitransparente */
-    display: flex; /* Alinea el formulario en el centro */
+.login-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  padding: 8px 24px;
+}
+
+.login-button:hover {
+  background-color: white;
+  color: #002b7f;
+}
+
+.logout-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  padding: 8px 24px;
+}
+
+.logout-button:hover {
+  background-color: white;
+  color: #002b7f;
+}
+
+@media (max-width: 1024px) {
+  .navbar-content {
     justify-content: center;
+  }
+
+  .navbar-center {
+    position: static;
+    transform: none;
+    margin: 0 auto;
+  }
+
+  .navbar-right {
+    position: absolute;
+    right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 10px 20px;
+  }
+
+  .navbar-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .navbar-center {
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .navbar-right {
+    position: static;
+    margin-top: 10px;
+  }
+
+  .navbar-item {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-center {
+    flex-direction: column;
     align-items: center;
-    z-index: 9999; /* Asegura que el formulario esté sobre todo lo demás */
+    gap: 10px;
+    width: 100%;
+  }
+
+  .navbar-item {
+    width: 100%;
+  }
+
+  .navbar-right {
+    width: 100%;
+  }
+
+  .login-button,
+  .logout-button {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
-/* Contenedor del formulario de login */
-.login-form-container {
-    background-color: #fff; /* Fondo blanco para el formulario */
-    padding: 30px; /* Espaciado interno */
-    border-radius: 10px; /* Bordes redondeados */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Sombra para profundidad */
-    width: 400px; /* Ancho fijo del formulario */
-    text-align: center; /* Centra el contenido */
-    border: 1px solid #ddd; /* Borde gris claro */
-    font-family: 'Poppins', sans-serif; /* Aplica la fuente */
-}
-
-/* Estilos para los campos de entrada del formulario */
-.login-form-container input {
-    width: 100%; /* Campo de entrada ocupa todo el ancho disponible */
-    padding: 12px; /* Espaciado interno */
-    margin-bottom: 20px; /* Espaciado entre campos */
-    border: 1px solid #ddd; /* Borde gris claro */
-    border-radius: 5px; /* Bordes redondeados */
-    font-size: 1rem; /* Tamaño de fuente */
-    font-family: 'Poppins', sans-serif; /* Fuente moderna */
-}
-
-/* Estilos para el botón del formulario de login */
-.login-form-container button {
-    width: 100%; /* Botón ocupa todo el ancho */
-    padding: 12px; /* Espaciado interno */
-    background-color: #3498db; /* Fondo rojo vibrante */
-    color: white; /* Color de texto blanco */
-    border: none; /* Sin bordes adicionales */
-    border-radius: 5px; /* Bordes redondeados */
-    font-size: 1.1rem; /* Tamaño de fuente ligeramente mayor */
-    cursor: pointer; /* Cambia el cursor al pasar por encima */
-    font-family: 'Poppins', sans-serif; /* Fuente moderna */
-    font-weight: 600; /* Negrita */
-}
-
-/* Efecto hover para el botón del formulario */
-.login-form-container button:hover {
-    background-color: #18d121; /* Cambia el color del fondo al pasar el ratón */
-}
-
-/* Botón de login integrado con los ítems de la barra */
-button.navbar-item {
-    all: unset; /* Resetea todos los estilos previos */
-    flex: 1; /* Ocupa el mismo espacio que los enlaces */
-    text-align: center; /* Centra el texto */
-    color: white; /* Color de texto blanco */
-    border: 2px solid transparent; /* Sin bordes visibles por defecto */
-    padding: 10px 0; /* Espaciado interno */
-    border-radius: 20px; /* Bordes redondeados */
-    font-size: 18px; /* Tamaño de fuente */
-    font-weight: 600; /* Negrita */
-    cursor: pointer; /* Cambia el cursor al pasar por encima */
-    font-family: 'Poppins', sans-serif; /* Fuente moderna */
-}
-
-/* Efecto hover para el botón de login */
-button.navbar-item:hover {
-    transform: translateY(-3px); /* Eleva ligeramente el botón */
-}

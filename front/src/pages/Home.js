@@ -23,10 +23,10 @@ const Home: React.FC = () => {
             <p className="subtitle">Descubre eventos locales, comparte recursos y construye una ciudad mejor juntos</p>
             <div className="cta-buttons">
               <Link to="/crear-usuario">
-                <button className="btn-registro">Únete Gratis</button>
+                <button className="btn-registro btn-unete">Únete Gratis</button>
               </Link>
               <Link to="/denuncias">
-                <button className="btn-registro">Explorar la comunidad</button>
+                <button className="btn-registro btn-explora">Explorar la comunidad</button>
               </Link>
             </div>
           </div>
@@ -99,7 +99,7 @@ const Home: React.FC = () => {
           <h2>Únete a la comunidad de Loja hoy mismo</h2>
           <p>Más de 10,000 lojanos ya están conectados. ¡No te quedes fuera!</p>
           <Link to="/crear-usuario">
-            <button className="btn-registro">Crear mi cuenta gratis</button>
+            <button className="btn-registro btn-unete">Crear mi cuenta gratis</button>
           </Link>
         </section>
       </main>
@@ -110,13 +110,10 @@ const Home: React.FC = () => {
             <h4>Acerca de</h4>
             <ul>
               <li>
-                <a href="#">Nuestra misión</a>
+                <Link to="/mission">Nuestra misión</Link>
               </li>
               <li>
-                <a href="#">Equipo</a>
-              </li>
-              <li>
-                <a href="#">Contacto</a>
+              <Link to="/team">Equipo</Link>
               </li>
             </ul>
           </div>
@@ -138,7 +135,7 @@ const Home: React.FC = () => {
           <p>&copy; 2025 LojaComunidad. Todos los derechos reservados.</p>
         </div>
         <div className="footer-partners">
-          <p>Power BI UIDE</p>
+          <p>Powered by UIDE</p>
           <img src="https://repositorio.uide.edu.ec/image/logo-uide.png" alt="UIDE Logo" className="uide-logo" />
         </div>
       </footer>
@@ -147,4 +144,3 @@ const Home: React.FC = () => {
 }
 
 export default Home
-

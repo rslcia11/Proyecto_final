@@ -1,150 +1,81 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import "./BarraDeNavegacion.css";
+"use client"
+
+import { useState, useEffect } from "react"
+import { Link, useNavigate, useLocation } from "react-router-dom"
+import { FiLogOut } from "react-icons/fi"
+import { MdReport } from "react-icons/md"
+import { BiStore } from "react-icons/bi"
+import { AiOutlineHome } from "react-icons/ai"
+import { BiLogIn } from "react-icons/bi"
+import "./BarraDeNavegacion.css"
 
 function BarraDeNavegacion() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoginVisible, setIsLoginVisible] = useState(false);
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const [loggedUser, setLoggedUser] = useState(null);
-  const loginFormRef = useRef(null);
-  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [loggedUser, setLoggedUser] = useState(null)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
-    const token = localStorage.getItem("userToken"); 
-    const user = localStorage.getItem("user");
+    checkLoginStatus()
+  }, []) // Updated to remove unnecessary dependency on location
+
+  const checkLoginStatus = () => {
+    const token = localStorage.getItem("userToken")
+    const user = localStorage.getItem("user")
 
     if (token && user) {
-      setIsLoggedIn(true);
-      setLoggedUser(JSON.parse(user));
-    }
-  }, []);
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-  
-    try {
-      const response = await fetch("http://localhost:3000/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: loginEmail, password: loginPassword }), // 🔹 Corrección aquí
-      });
-  
-      const data = await response.json();
-  
-      if (!response.ok) {
-        alert(data.error || "Error en el login");
-      } else {
-        localStorage.setItem("userToken", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user)); 
-        setIsLoggedIn(true);
-        setLoggedUser(data.user);
-        navigate("/denuncias");
-      }
-    } catch (error) {
-      console.error("Error en login:", error);
-      alert("Error de conexión");
-    }
-  };
-  
-  const toggleLoginForm = () => {
-    if (isLoggedIn) {
-      localStorage.removeItem("userToken"); 
-      localStorage.removeItem("user"); 
-      setIsLoggedIn(false);
-      setLoggedUser(null);
-      navigate("/");
+      setIsLoggedIn(true)
+      setLoggedUser(JSON.parse(user))
     } else {
-      setIsLoginVisible((prev) => !prev);
+      setIsLoggedIn(false)
+      setLoggedUser(null)
     }
-  };
+  }
 
-  const handleClickOutside = (event) => {
-    if (isLoginVisible && loginFormRef.current && !loginFormRef.current.contains(event.target)) {
-      setIsLoginVisible(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isLoginVisible]);
+  const handleLogout = () => {
+    localStorage.removeItem("userToken")
+    localStorage.removeItem("user")
+    setIsLoggedIn(false)
+    setLoggedUser(null)
+    navigate("/")
+  }
 
   return (
     <nav className="navbar">
-      <div className="navbar-menu">
-        {isLoggedIn ? (
-          <>
-            <Link to="/denuncias" className="navbar-item">
-              Denuncias
-            </Link>
-            <span className="navbar-divider" />
-            <Link to="/marketplace" className="navbar-item">
-              Negocios
-            </Link>
-            <span className="navbar-divider" />
-            <button onClick={toggleLoginForm} className="navbar-item">
-              Cerrar sesión
-            </button>
-          </>
-        ) : (
-          <>
+      <div className="navbar-content">
+        <div className="navbar-center">
+          {!isLoggedIn && (
             <Link to="/" className="navbar-item">
+              <AiOutlineHome className="nav-icon" />
               Inicio
             </Link>
-            <span className="navbar-divider" />
-            <Link to="/denuncias" className="navbar-item">
-              Denuncias
-            </Link>
-            <span className="navbar-divider" />
-            <Link to="/marketplace" className="navbar-item">
-              Negocios
-            </Link>
-            <span className="navbar-divider" />
-            <Link to="/crear-usuario" className="navbar-item">
-              Crear Usuario
-            </Link>
-            <span className="navbar-divider" />
-            <button onClick={toggleLoginForm} className="navbar-item">
-              Ingresar
+          )}
+          <Link to="/denuncias" className="navbar-item">
+            <MdReport className="nav-icon" />
+            Denuncias
+          </Link>
+          <Link to="/marketplace" className="navbar-item">
+            <BiStore className="nav-icon" />
+            Negocios
+          </Link>
+        </div>
+        <div className="navbar-right">
+          {isLoggedIn ? (
+            <button onClick={handleLogout} className="navbar-item logout-button">
+              <FiLogOut className="nav-icon" />
+              Cerrar sesión
             </button>
-          </>
-        )}
-      </div>
-
-      <div className="navbar-right">
-        {isLoggedIn ? (
-          <span className="welcome-message">Bienvenido, {loggedUser ? loggedUser.name : "Usuario"}</span>
-        ) : (
-          isLoginVisible && (
-            <div className="login-form-overlay">
-              <div className="login-form-container" ref={loginFormRef}>
-                <h2>Iniciar sesión</h2>
-                <form onSubmit={handleLogin}>
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    required
-                  />
-                  <input
-                    type="password"
-                    placeholder="Contraseña"
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    required
-                  />
-                  <button type="submit">Iniciar sesión</button>
-                </form>
-              </div>
-            </div>
-          )
-        )}
+          ) : (
+            <Link to="/login" className="navbar-item login-button">
+              <BiLogIn className="nav-icon" />
+              Ingresar
+            </Link>
+          )}
+        </div>
       </div>
     </nav>
-  );
+  )
 }
 
-export default BarraDeNavegacion;
+export default BarraDeNavegacion
+

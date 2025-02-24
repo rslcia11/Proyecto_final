@@ -1,12 +1,13 @@
 import React from "react";
+import "./TermsAndConditions.css"
 
 const TermsAndConditions: React.FC = () => {
   return (
     <div className="terms-and-conditions">
       <h1>Términos y Condiciones</h1>
-      <p>Última actualización: [Fecha]</p>
+      <p>Última actualización: 23 de febrero, 2025</p>
 
-      <h2>1. Términos</h2>
+      <h2>Términos</h2>
       <p>
         Al acceder a este sitio web, usted acepta estar sujeto a estos términos de servicio, todas las leyes y
         regulaciones aplicables, y acepta que es responsable del cumplimiento de las leyes locales aplicables. Si no
@@ -15,7 +16,7 @@ const TermsAndConditions: React.FC = () => {
         aplicables.
       </p>
 
-      <h2>2. Uso de la Licencia</h2>
+      <h2>Uso de la Licencia</h2>
       <p>
         Se concede permiso para descargar temporalmente una copia de los materiales (información o software) en el sitio
         web de LojaComunidad solo para visualización transitoria personal y no comercial. Esta es la concesión de una
@@ -42,13 +43,13 @@ const TermsAndConditions: React.FC = () => {
 
       {/* Add more sections as needed */}
 
-      <h2>16. Cambios en los Términos de Servicio</h2>
+      <h2>Cambios en los Términos de Servicio</h2>
       <p>
         Podemos revisar estos términos de servicio para el sitio web en cualquier momento sin previo aviso. Al usar este
         sitio web, usted acepta estar sujeto a la versión actual de estos términos de servicio.
       </p>
 
-      <h2>17. Ley Aplicable</h2>
+      <h2>Ley Aplicable</h2>
       <p>
         Estos términos y condiciones se rigen e interpretan de acuerdo con las leyes de Ecuador y usted se somete
         irrevocablemente a la jurisdicción exclusiva de los tribunales en ese estado o localidad.

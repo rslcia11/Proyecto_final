@@ -5,9 +5,12 @@ import RegisterUser from "./pages/RegisterUser"; // Página de registro de usuar
 import Home from "./pages/Home"; // Página de inicio (crearemos este archivo)
 import NotFound from "./pages/NotFound"; // Página 404
 import Dashboard from './pages/Dashboard';
+import Login from "./pages/Login"
 import Marketplace from './pages/Marketplace';
 import Denuncias from "./pages/Denuncias";
 import TermsAndConditions from './components/TermsAndConditions';
+import MissionModal from './components/MissionModal';
+import TeamSection from "./components/TeamSection";
 
 function App() {
   return (
@@ -16,11 +19,14 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/crear-usuario" element={<RegisterUser />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/denuncias" element={<Denuncias />} />
         <Route path="/terms" element={<TermsAndConditions />} />
+        <Route path="/mission" element={<MissionModal />} />
+        <Route path="/team" element={<TeamSection />} />
       </Routes>
     </Router>
   );

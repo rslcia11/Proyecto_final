@@ -1,0 +1,62 @@
+.terms-and-conditions {
+    max-width: 800px;
+    margin: 80px auto 0;
+    padding: 40px 20px;
+    font-family: "Poppins", sans-serif;
+    color: #333;
+  }
+  
+  .terms-and-conditions h1 {
+    color: var(--color-primary, #cc0000);
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .last-updated {
+    color: #666;
+    font-size: 0.9em;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .terms-subsection {
+    margin-bottom: 40px;
+  }
+  
+  .terms-subsection h2 {
+    color: var(--color-secondary, #002b7f);
+    font-size: 1.5em;
+    margin-bottom: 15px;
+  }
+  
+  .terms-subsection p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+  
+  .terms-subsection ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .terms-subsection li {
+    margin-bottom: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .terms-and-conditions {
+      margin-top: 60px;
+    }
+  
+    .terms-and-conditions h1 {
+      font-size: 2em;
+    }
+  
+    .terms-subsection h2 {
+      font-size: 1.3em;
+    }
+  }
+  
+  

@@ -1,14 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
 
 :root {
-  --color-primary: #3498db;
-  --color-secondary: #2ecc71;
-  --color-accent: #f39c12;
-  --color-background: #f5f7fa;
-  --color-text: #34495e;
-  --color-success: #27ae60;
-  --color-warning: #f1c40f;
-  --color-error: #e74c3c;
+  --color-primary: #cc0000; /* Rojo carmesí de la bandera */
+  --color-secondary: #002b7f; /* Azul marino de la bandera */
+  --color-accent: #ffd700; /* Dorado de la bandera */
+  --color-success: #228b22; /* Verde del laurel */
+  --color-background: #ffffff;
+  --color-text: #1a1a1a;
+  --color-text-light: #ffffff;
+  --color-gray-light: #f5f5f5;
+  --color-gray: #e0e0e0;
 }
 
 * {
@@ -18,7 +19,7 @@
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   line-height: 1.6;
   color: var(--color-text);
   background-color: var(--color-background);
@@ -32,7 +33,7 @@ body {
 /* Header */
 .header {
   padding: 1rem 2rem;
-  background-color: white;
+  background-color: var(--color-background);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -46,19 +47,35 @@ nav {
   height: 40px;
 }
 
-.btn-login {
-  background-color: transparent;
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
+
+.btn-registro {
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border-radius: 30px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.btn-login:hover {
+.btn-unete {
   background-color: var(--color-primary);
-  color: white;
+}
+
+.btn-unete:hover {
+  background-color: #a50000;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(204, 0, 0, 0.3);
+}
+
+.btn-explora {
+  background-color: var(--color-secondary);
+}
+
+.btn-explora:hover {
+  background-color: #001f5c;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 43, 127, 0.3);
 }
 
 /* Sección de Inicio */
@@ -66,7 +83,7 @@ nav {
   display: flex;
   align-items: center;
   padding: 4rem 2rem;
-  background-color: #f0f8ff;
+  background: linear-gradient(135deg, rgba(0, 43, 127, 0.05) 0%, rgba(204, 0, 0, 0.05) 100%);
 }
 
 .inicio-content {
@@ -82,18 +99,21 @@ nav {
 .inicio-image img {
   max-width: 100%;
   height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
   font-size: 3rem;
   margin-bottom: 1rem;
   color: var(--color-primary);
+  font-weight: 700;
 }
 
 .subtitle {
   font-size: 1.2rem;
   margin-bottom: 2rem;
-  color: var(--color-text);
+  color: var(--color-secondary);
 }
 
 .cta-buttons {
@@ -101,8 +121,9 @@ h1 {
   gap: 1rem;
 }
 
+/* Modificación de los botones */
+
 .btn-registro {
-  background-color: var(--color-accent);
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -112,68 +133,60 @@ h1 {
   transition: all 0.3s ease;
 }
 
-.btn-registro:hover {
-  background-color: #e67e22;
-  transform: translateY(-3px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.btn-explorar {
-  background-color: transparent;
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn-explorar:hover {
+.btn-unete {
   background-color: var(--color-primary);
-  color: white;
 }
 
-.icon-right {
-  transition: transform 0.3s ease;
+.btn-unete:hover {
+  background-color: #a50000;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(204, 0, 0, 0.3);
 }
 
-.btn-explorar:hover .icon-right {
-  transform: translateX(5px);
+.btn-explora {
+  background-color: var(--color-secondary);
+}
+
+.btn-explora:hover {
+  background-color: #001f5c;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 43, 127, 0.3);
 }
 
 /* Sección de Estadísticas */
 .estadisticas {
   display: flex;
   justify-content: space-around;
-  padding: 2rem;
-  background-color: var(--color-primary);
-  color: white;
+  padding: 3rem 2rem;
+  background-color: var(--color-secondary);
+  color: var(--color-text-light);
   text-align: center;
 }
 
 .estadistica-item h3 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
+  font-weight: 700;
+  color: var(--color-accent);
 }
 
 .estadistica-item p {
   font-size: 1rem;
+  opacity: 0.9;
 }
 
 /* Sección de Beneficios */
 .beneficios {
   padding: 4rem 2rem;
   text-align: center;
+  background-color: var(--color-background);
 }
 
 .beneficios h2 {
   font-size: 2.5rem;
   margin-bottom: 3rem;
   color: var(--color-primary);
+  font-weight: 700;
 }
 
 .beneficios-grid {
@@ -183,41 +196,45 @@ h1 {
 }
 
 .beneficio-item {
-  background-color: white;
+  background-color: var(--color-gray-light);
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  border: 1px solid var(--color-gray);
 }
 
 .beneficio-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  border-color: var(--color-accent);
 }
 
 .icono {
   font-size: 3rem;
-  color: var(--color-primary);
+  color: var(--color-secondary);
   margin-bottom: 1rem;
 }
 
 .beneficio-item h3 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  color: var(--color-secondary);
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
 /* Sección de Testimonios */
 .testimonios {
   padding: 4rem 2rem;
   text-align: center;
-  background-color: #f9f9f9;
+  background: linear-gradient(135deg, rgba(0, 43, 127, 0.05) 0%, rgba(204, 0, 0, 0.05) 100%);
 }
 
 .testimonios h2 {
   font-size: 2.5rem;
   margin-bottom: 3rem;
   color: var(--color-primary);
+  font-weight: 700;
 }
 
 .testimonios-grid {
@@ -227,7 +244,7 @@ h1 {
 }
 
 .testimonio {
-  background-color: white;
+  background-color: var(--color-background);
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -238,11 +255,13 @@ h1 {
   height: 80px;
   border-radius: 50%;
   margin-bottom: 1rem;
+  border: 3px solid var(--color-accent);
 }
 
 .testimonio p {
   font-style: italic;
   margin-bottom: 1rem;
+  color: var(--color-text);
 }
 
 .testimonio span {
@@ -252,8 +271,8 @@ h1 {
 
 /* Sección CTA */
 .cta {
-  background-color: var(--color-primary);
-  color: white;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: var(--color-text-light);
   text-align: center;
   padding: 4rem 2rem;
   border-radius: 20px;
@@ -263,17 +282,19 @@ h1 {
 .cta h2 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
+  font-weight: 700;
 }
 
 .cta p {
   font-size: 1.2rem;
   margin-bottom: 2rem;
+  opacity: 0.9;
 }
 
 /* Footer */
 footer {
-  background-color: var(--color-primary);
-  color: white;
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
+  color: var(--color-text-light);
   padding: 3rem 2rem 1rem;
   border-radius: 20px 20px 0 0;
   margin-top: 4rem;
@@ -290,6 +311,8 @@ footer {
 .footer-section h4 {
   font-size: 1.2rem;
   margin-bottom: 1rem;
+  color: var(--color-accent);
+  font-weight: 600;
 }
 
 .footer-section ul {
@@ -307,13 +330,48 @@ footer {
 }
 
 .footer-section ul li a:hover {
-  color: white;
+  color: var(--color-accent);
 }
 
 .footer-bottom {
   text-align: center;
   padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Footer Partners - UIDE Logo */
+.footer-partners {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer-partners p {
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.uide-logo {
+  max-width: 150px;
+  height: auto;
+  transition: transform 0.3s ease;
+  background-color: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.uide-logo:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Responsive Design */
@@ -343,7 +401,7 @@ footer {
 
   .btn-registro,
   .btn-explorar {
-    width: 100%;width: 100%;
+    width: 100%;
     margin-bottom: 1rem;
   }
 
@@ -367,6 +425,14 @@ footer {
     flex-direction: column;
     align-items: center;
     text-align: center;
+  }
+
+  .footer-partners {
+    padding: 1rem;
+  }
+
+  .uide-logo {
+    max-width: 120px;
   }
 }
 
