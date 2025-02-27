@@ -1,9 +1,8 @@
-const Marketplace = require('../models/marketplace.model');
+const Marketplace = require("../models/marketplace.model");
+const User = require("../models/user.model");  // 🔥 IMPORTANTE: Importar el modelo correcto
 
 /**
  * Obtener todos los productos del marketplace
- * @param {Object} req - Objeto de solicitud Express
- * @param {Object} res - Objeto de respuesta Express
  */
 const getProducts = async (req, res) => {
     try {
@@ -16,8 +15,6 @@ const getProducts = async (req, res) => {
 
 /**
  * Obtener un producto específico por ID
- * @param {Object} req - Objeto de solicitud Express
- * @param {Object} res - Objeto de respuesta Express
  */
 const getProductById = async (req, res) => {
     try {
@@ -31,35 +28,45 @@ const getProductById = async (req, res) => {
 
 /**
  * Crear un nuevo producto en el marketplace
- * @param {Object} req - Objeto de solicitud Express
- * @param {Object} res - Objeto de respuesta Express
  */
 const createProduct = async (req, res) => {
     try {
-        const { name, user_iduser, user_idneighborhood, description, image, price, product_status } = req.body;
-        const newProduct = await Marketplace.create({ 
-            name, 
-            user_iduser, 
-            user_idneighborhood, 
-            description, 
-            image, 
-            price, 
-            product_status 
+        const { name, user_iduser, description, image, price, product_status } = req.body;
+
+        // 🔥 Buscar el usuario y obtener su `idneighborhood`
+        const user = await User.findOne({ where: { iduser: user_iduser } });
+
+        if (!user) {
+            return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+
+        if (!user.idneighborhood) {
+            return res.status(400).json({ error: "El usuario no tiene un vecindario asignado" });
+        }
+
+        // 🔥 Crear el nuevo producto en la tabla marketplace
+        const newProduct = await Marketplace.create({
+            name,
+            user_iduser,
+            user_idneighborhood: user.idneighborhood, // 🔥 Asignar vecindario automáticamente
+            description,
+            image,
+            price,
+            product_status
         });
+
         res.status(201).json(newProduct);
     } catch (error) {
-        console.error('Error completo:', error); // Para debug
-        res.status(500).json({ 
-            message: 'Error al crear producto',
-            error: error.message 
+        console.error("Error completo:", error);
+        res.status(500).json({
+            message: "Error al crear producto",
+            error: error.message
         });
     }
 };
 
 /**
  * Actualizar un producto existente
- * @param {Object} req - Objeto de solicitud Express
- * @param {Object} res - Objeto de respuesta Express
  */
 const updateProduct = async (req, res) => {
     try {
@@ -76,8 +83,6 @@ const updateProduct = async (req, res) => {
 
 /**
  * Eliminar un producto del marketplace
- * @param {Object} req - Objeto de solicitud Express
- * @param {Object} res - Objeto de respuesta Express
  */
 const deleteProduct = async (req, res) => {
     try {
@@ -94,7 +99,7 @@ const deleteProduct = async (req, res) => {
 module.exports = { 
     getProducts, 
     getProductById, 
-    createProduct, 
+    createProduct,  // 🔥 Ahora la función correcta es `createProduct`
     updateProduct, 
-    deleteProduct, 
+    deleteProduct
 };
