@@ -1,3 +1,4 @@
+const express = require("express");
 var createError = require("http-errors")
 var express = require("express")
 var path = require("path")
@@ -14,6 +15,9 @@ const uploadRoutes = require("./routes/upload") // Agregar esta línea
 var indexRouter = require("./routes/index")
 
 const routes = require("./routes")
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 var app = express()
 app.use(express.json())

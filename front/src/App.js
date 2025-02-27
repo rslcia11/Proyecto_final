@@ -12,6 +12,7 @@ import TermsAndConditions from './components/TermsAndConditions';
 import MissionModal from './components/MissionModal';
 import TeamSection from "./components/TeamSection";
 
+
 function App() {
   return (
     <Router>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { FaPlus, FaSearch } from "react-icons/fa"
+import { FaPlus, FaSearch, FaTag, FaFileImage, FaDollarSign, FaBoxOpen } from "react-icons/fa"
 import "./Marketplace.css"
 
 const Marketplace = () => {
@@ -11,6 +11,14 @@ const Marketplace = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
+  const [selectedFile, setSelectedFile] = useState(null)
+
+  // 🔹 Estado para el formulario de nuevo producto
+  const [productData, setProductData] = useState({
+    name: "",
+    description: "",
+    price: "",
+  })
 
   useEffect(() => {
     const token = localStorage.getItem("userToken")
@@ -36,9 +44,72 @@ const Marketplace = () => {
 
   const filteredItems = marketItems.filter(
     (item) =>
-      item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.description?.toLowerCase().includes(searchTerm.toLowerCase()),
   )
+
+  // 🔹 Manejar cambios en el formulario
+  const handleChange = (e) => {
+    setProductData({
+      ...productData,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  // 🔹 Manejar selección de imagen
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0])
+  }
+
+  // 🔹 Enviar el producto al backend
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+        alert("Debes iniciar sesión para publicar un producto.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", productData.name);
+    formData.append("description", productData.description);
+    formData.append("price", productData.price);
+    formData.append("user_iduser", user.iduser);
+    formData.append("user_idneighborhood", user.idneighborhood);
+    if (selectedFile) {
+      formData.append("image", selectedFile);
+    }
+    
+    console.log("Datos enviados al backend:", Object.fromEntries(formData.entries()));
+    
+    const response = await fetch("http://localhost:3000/marketplace", {
+      method: "POST",
+      body: formData,
+    });
+    
+    try {
+        const response = await fetch("http://localhost:3000/marketplace", {
+            method: "POST",
+            body: formData,
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Error al publicar el producto");
+        }
+
+        const newItem = await response.json();
+        setMarketItems([...marketItems, newItem]);
+        setShowModal(false);
+        setProductData({ name: "", description: "", price: "" });
+        setSelectedFile(null);
+    } catch (error) {
+        console.error("Error en la solicitud:", error);
+        alert("Hubo un problema al publicar el producto.");
+    }
+};
+
 
   if (loading) {
     return <p>Cargando productos...</p>
@@ -81,11 +152,11 @@ const Marketplace = () => {
             <div key={item.idmarketplace} className="marketplace-item">
               <img
                 src={item.photoUrl || item.filePath || "/placeholder.svg"}
-                alt={item.title || "Producto"}
+                alt={item.name || "Producto"}
                 className="marketplace-image"
               />
               <div className="item-details">
-                <h3>{item.title || "Sin título"}</h3>
+                <h3>{item.name || "Sin título"}</h3>
                 <p className="item-description">{item.description || "Sin descripción"}</p>
                 <p className="item-price">Precio: ${item.price || "Consultar"}</p>
               </div>
@@ -98,12 +169,48 @@ const Marketplace = () => {
         </div>
       )}
 
-      {/* Aquí iría el modal para crear un nuevo producto */}
+      {/* 🔹 Modal para publicar un nuevo producto */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <h2>Publicar Nuevo Producto</h2>
-            {/* Formulario para publicar un nuevo producto */}
+            <h2>📦 Publicar Nuevo Producto</h2>
+            <form onSubmit={handleSubmit}>
+              <label><FaTag /> Nombre del producto:</label>
+              <input
+                type="text"
+                name="name"
+                value={productData.name}
+                onChange={handleChange}
+                required
+              />
+
+              <label>📄 Descripción:</label>
+              <textarea
+                name="description"
+                value={productData.description}
+                onChange={handleChange}
+                required
+              />
+
+              <label><FaDollarSign /> Precio:</label>
+              <input
+                type="number"
+                name="price"
+                value={productData.price}
+                onChange={handleChange}
+                required
+              />
+
+              <label><FaFileImage /> Imágenes:</label>
+              <input
+                type="file"
+                name="image"
+                onChange={handleFileChange}
+              />
+
+              <button className="btn-submit" type="submit">📢 PUBLICAR PRODUCTO</button>
+              <button className="btn-cancel" type="button" onClick={() => setShowModal(false)}>Cancelar</button>
+            </form>
           </div>
         </div>
       )}
@@ -112,4 +219,3 @@ const Marketplace = () => {
 }
 
 export default Marketplace
-

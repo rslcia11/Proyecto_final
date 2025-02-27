@@ -31,39 +31,28 @@ const getProductById = async (req, res) => {
  */
 const createProduct = async (req, res) => {
     try {
-        const { name, user_iduser, description, image, price, product_status } = req.body;
-
-        // 🔥 Buscar el usuario y obtener su `idneighborhood`
-        const user = await User.findOne({ where: { iduser: user_iduser } });
-
-        if (!user) {
-            return res.status(404).json({ error: "Usuario no encontrado" });
+        console.log("Datos recibidos en el backend:", req.body);
+        
+        const { name, description, price, user_iduser, user_idneighborhood } = req.body;
+        if (!user_iduser || !user_idneighborhood) {
+            return res.status(400).json({ error: "Faltan datos obligatorios" });
         }
 
-        if (!user.idneighborhood) {
-            return res.status(400).json({ error: "El usuario no tiene un vecindario asignado" });
-        }
-
-        // 🔥 Crear el nuevo producto en la tabla marketplace
-        const newProduct = await Marketplace.create({
-            name,
-            user_iduser,
-            user_idneighborhood: user.idneighborhood, // 🔥 Asignar vecindario automáticamente
-            description,
-            image,
-            price,
-            product_status
+        const newProduct = await Marketplace.create({ 
+            name, 
+            description, 
+            price, 
+            user_iduser, 
+            user_idneighborhood 
         });
 
         res.status(201).json(newProduct);
     } catch (error) {
-        console.error("Error completo:", error);
-        res.status(500).json({
-            message: "Error al crear producto",
-            error: error.message
-        });
+        console.error("Error al crear producto:", error);
+        res.status(500).json({ error: "Error al crear el producto" });
     }
 };
+
 
 /**
  * Actualizar un producto existente

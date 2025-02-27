@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const MarketplaceController = require('../controllers/marketplace.controller');
+const multer = require("multer");
+const upload = multer();
 
 // Ruta para obtener todos los productos
 router.get('/', MarketplaceController.getProducts);
@@ -10,7 +12,7 @@ router.get('/:id', MarketplaceController.getProductById);
 
 // Ruta para crear un nuevo producto
 router.post('/', MarketplaceController.createProduct);
-
+router.post("/marketplace", upload.none(), createProduct);
 // Ruta para actualizar un producto existente
 router.put('/:id', MarketplaceController.updateProduct);
 
@@ -18,3 +20,5 @@ router.put('/:id', MarketplaceController.updateProduct);
 router.delete('/:id', MarketplaceController.deleteProduct);
 
 module.exports = router;
+
+
