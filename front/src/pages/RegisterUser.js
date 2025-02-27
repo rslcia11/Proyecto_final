@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaUser, FaLock, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-import Swal from "sweetalert2"; // Importamos SweetAlert2
+import Swal from "sweetalert2";
 import "./RegisterUser.css";
 
 const RegisterUser = () => {

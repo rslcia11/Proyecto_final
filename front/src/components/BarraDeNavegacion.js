@@ -1,44 +1,35 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Link, useNavigate, useLocation } from "react-router-dom"
-import { FiLogOut } from "react-icons/fi"
-import { MdReport } from "react-icons/md"
-import { BiStore } from "react-icons/bi"
-import { AiOutlineHome } from "react-icons/ai"
-import { BiLogIn } from "react-icons/bi"
-import "./BarraDeNavegacion.css"
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FiLogOut } from "react-icons/fi";
+import { MdReport } from "react-icons/md";
+import { BiStore } from "react-icons/bi";
+import { AiOutlineHome } from "react-icons/ai";
+import { BiLogIn } from "react-icons/bi";
+import "./BarraDeNavegacion.css";
 
 function BarraDeNavegacion() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [loggedUser, setLoggedUser] = useState(null)
-  const navigate = useNavigate()
-  const location = useLocation()
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("userToken"));
+  const navigate = useNavigate();
 
   useEffect(() => {
-    checkLoginStatus()
-  }, []) // Updated to remove unnecessary dependency on location
+    const checkLoginStatus = () => {
+      setIsLoggedIn(!!localStorage.getItem("userToken"));
+    };
 
-  const checkLoginStatus = () => {
-    const token = localStorage.getItem("userToken")
-    const user = localStorage.getItem("user")
-
-    if (token && user) {
-      setIsLoggedIn(true)
-      setLoggedUser(JSON.parse(user))
-    } else {
-      setIsLoggedIn(false)
-      setLoggedUser(null)
-    }
-  }
+    window.addEventListener("storage", checkLoginStatus);
+    return () => {
+      window.removeEventListener("storage", checkLoginStatus);
+    };
+  }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("userToken")
-    localStorage.removeItem("user")
-    setIsLoggedIn(false)
-    setLoggedUser(null)
-    navigate("/")
-  }
+    localStorage.removeItem("userToken");
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    navigate("/");
+  };
 
   return (
     <nav className="navbar">
@@ -74,8 +65,7 @@ function BarraDeNavegacion() {
         </div>
       </div>
     </nav>
-  )
+  );
 }
 
-export default BarraDeNavegacion
-
+export default BarraDeNavegacion;

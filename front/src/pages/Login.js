@@ -1,39 +1,40 @@
 "use client"
 
-import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { FiMail, FiLock, FiLogIn, FiUserPlus } from "react-icons/fi"
-import "./Login.css"
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FiMail, FiLock, FiLogIn, FiUserPlus } from "react-icons/fi";
+import "./Login.css";
 
 function Login() {
-  const [loginEmail, setLoginEmail] = useState("")
-  const [loginPassword, setLoginPassword] = useState("")
-  const navigate = useNavigate()
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
       const response = await fetch("http://localhost:3000/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: loginEmail, password: loginPassword }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        alert(data.error || "Error en el login")
+        alert(data.error || "Error en el login");
       } else {
-        localStorage.setItem("userToken", data.token)
-        localStorage.setItem("user", JSON.stringify(data.user))
-        navigate("/denuncias")
+        localStorage.setItem("userToken", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        window.dispatchEvent(new Event("storage")); // 🔥 Forzar actualización de la UI
+        navigate("/denuncias");
       }
     } catch (error) {
-      console.error("Error en login:", error)
-      alert("Error de conexión")
+      console.error("Error en login:", error);
+      alert("Error de conexión");
     }
-  }
+  };
 
   return (
     <div className="login-page">
@@ -76,8 +77,7 @@ function Login() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Login
-
+export default Login;
