@@ -1,216 +1,239 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { FaPlus, FaSearch, FaTag, FaFileImage, FaDollarSign, FaBoxOpen } from "react-icons/fa"
+import { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
+import {
+  FaStore,
+  FaMapMarkerAlt,
+  FaSearch,
+  FaPlus,
+  FaTimes,
+  FaChevronLeft,
+  FaChevronRight,
+  FaDollarSign,
+  FaEdit,
+  FaTrash,
+  FaTag,
+  FaImage,
+  FaPhone,
+} from "react-icons/fa"
 import "./Marketplace.css"
 
-const Marketplace = () => {
-  const [marketItems, setMarketItems] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [showModal, setShowModal] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedFile, setSelectedFile] = useState(null)
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3000"
 
-  // 🔹 Estado para el formulario de nuevo producto
-  const [productData, setProductData] = useState({
-    name: "",
-    description: "",
-    price: "",
-  })
+const Marketplace = () => {
+  const [products, setProducts] = useState([])
+  const [neighborhoods, setNeighborhoods] = useState([])
+  const [searchTerm, setSearchTerm] = useState("")
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
-    const token = localStorage.getItem("userToken")
-    setIsAuthenticated(!!token)
-
-    const fetchMarketItems = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/marketplace")
-        if (!response.ok) {
-          throw new Error("Error al obtener los productos")
-        }
-        const data = await response.json()
-        setMarketItems(data)
-      } catch (error) {
-        setError(error.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchMarketItems()
+    fetchProducts()
+    fetchNeighborhoods()
+    checkAuthStatus()
   }, [])
 
-  const filteredItems = marketItems.filter(
-    (item) =>
-      item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+  const checkAuthStatus = () => {
+    const userToken = localStorage.getItem("userToken")
+    setIsAuthenticated(!!userToken)
+  }
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`${API_URL}/marketplace`)
+      if (!response.ok) {
+        throw new Error("Error al obtener los productos")
+      }
+      const data = await response.json()
+      console.log("Productos obtenidos:", data)
+      setProducts(data)
+    } catch (error) {
+      console.error("Error al cargar productos:", error)
+    }
+  }
+
+  const fetchNeighborhoods = async () => {
+    try {
+      const response = await fetch(`${API_URL}/neighborhoods`)
+      if (!response.ok) {
+        throw new Error("Error al obtener los barrios")
+      }
+      const data = await response.json()
+      setNeighborhoods(data)
+    } catch (error) {
+      console.error("Error al cargar barrios:", error)
+    }
+  }
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value)
+  }
+
+  const filteredProducts = products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
-  // 🔹 Manejar cambios en el formulario
-  const handleChange = (e) => {
-    setProductData({
-      ...productData,
-      [e.target.name]: e.target.value
-    })
+  const handleImageClick = (urls, index) => {
+    setSelectedImage(urls.split(","))
+    setCurrentImageIndex(index)
   }
 
-  // 🔹 Manejar selección de imagen
-  const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0])
+  const handleCloseImageModal = () => {
+    setSelectedImage(null)
+    setCurrentImageIndex(0)
   }
 
-  // 🔹 Enviar el producto al backend
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : selectedImage.length - 1))
+  }
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) {
-        alert("Debes iniciar sesión para publicar un producto.");
-        return;
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex < selectedImage.length - 1 ? prevIndex + 1 : 0))
+  }
+
+  const handleDeleteProduct = async (productId) => {
+    if (!window.confirm("¿Estás seguro de que quieres eliminar este producto?")) {
+      return
     }
 
-    const formData = new FormData();
-    formData.append("name", productData.name);
-    formData.append("description", productData.description);
-    formData.append("price", productData.price);
-    formData.append("user_iduser", user.iduser);
-    formData.append("user_idneighborhood", user.idneighborhood);
-    if (selectedFile) {
-      formData.append("image", selectedFile);
-    }
-    
-    console.log("Datos enviados al backend:", Object.fromEntries(formData.entries()));
-    
-    const response = await fetch("http://localhost:3000/marketplace", {
-      method: "POST",
-      body: formData,
-    });
-    
+    const userToken = localStorage.getItem("userToken")
     try {
-        const response = await fetch("http://localhost:3000/marketplace", {
-            method: "POST",
-            body: formData,
-        });
+      const response = await fetch(`${API_URL}/marketplace/${productId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      })
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Error al publicar el producto");
-        }
+      if (!response.ok) {
+        throw new Error("Error al eliminar el producto")
+      }
 
-        const newItem = await response.json();
-        setMarketItems([...marketItems, newItem]);
-        setShowModal(false);
-        setProductData({ name: "", description: "", price: "" });
-        setSelectedFile(null);
+      // Actualizar la lista de productos
+      setProducts(products.filter((product) => product.idbusiness !== productId))
     } catch (error) {
-        console.error("Error en la solicitud:", error);
-        alert("Hubo un problema al publicar el producto.");
+      console.error("Error al eliminar el producto:", error)
+      alert("No se pudo eliminar el producto. Por favor, inténtalo de nuevo.")
     }
-};
-
-
-  if (loading) {
-    return <p>Cargando productos...</p>
   }
 
   return (
     <div className="marketplace-container">
       <header className="marketplace-header">
-        <h1>Marketplace de la Comunidad</h1>
+        <h1>
+          <FaStore /> Marketplace de la Comunidad
+        </h1>
         <p className="subtitle">Compra y vende artículos en tu vecindario</p>
       </header>
 
       <div className="marketplace-actions">
         <div className="search-bar">
           <FaSearch className="search-icon" />
-          <input
-            type="text"
-            placeholder="Buscar productos..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <input type="text" placeholder="Buscar productos..." value={searchTerm} onChange={handleSearchChange} />
         </div>
 
         {isAuthenticated ? (
-          <button className="btn-create" onClick={() => setShowModal(true)}>
-            <FaPlus /> Publicar Producto
-          </button>
+          <Link to="/create-product">
+            <button className="btn-create">
+              <FaPlus /> Publicar Producto
+            </button>
+          </Link>
         ) : (
           <p className="warning-message">Inicia sesión para publicar un producto.</p>
         )}
       </div>
 
-      {error ? (
-        <div className="error-message">
-          <p>{error}</p>
-        </div>
-      ) : filteredItems.length > 0 ? (
-        <div className="marketplace-items">
-          {filteredItems.map((item) => (
-            <div key={item.idmarketplace} className="marketplace-item">
-              <img
-                src={item.photoUrl || item.filePath || "/placeholder.svg"}
-                alt={item.name || "Producto"}
-                className="marketplace-image"
-              />
-              <div className="item-details">
-                <h3>{item.name || "Sin título"}</h3>
-                <p className="item-description">{item.description || "Sin descripción"}</p>
-                <p className="item-price">Precio: ${item.price || "Consultar"}</p>
+      <div className="products-list">
+        {filteredProducts.map((product) => {
+          const currentUser = JSON.parse(localStorage.getItem("user"))
+          const isOwner = currentUser && currentUser.iduser === product.user_iduser
+
+          return (
+            <div key={product.idbusiness} className="product-card">
+              <div className="product-header">
+                <h3>
+                  <FaTag /> {product.name}
+                </h3>
+                <span className="price">
+                  <FaDollarSign />
+                  {product.price}
+                </span>
               </div>
+              <p className="product-description">{product.description}</p>
+              {product.image && (
+                <div className={`product-images-container ${product.image.includes(",") ? "" : "single-image"}`}>
+                  {product.image.split(",").map((url, index, array) => (
+                    <div key={index} className="product-image-wrapper">
+                      <img
+                        src={url || "/placeholder.svg"}
+                        alt={`Imagen ${index + 1} del producto`}
+                        className="product-image"
+                        onClick={() => handleImageClick(product.image, index)}
+                        onError={(e) => {
+                          console.error("Error al cargar la imagen:", url)
+                          e.target.src = "/placeholder.svg"
+                        }}
+                      />
+                      {array.length > 1 && index === 0 && (
+                        <span className="product-image-count">
+                          <FaImage /> {array.length} imágenes
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="product-footer">
+                <span className="location">
+                  <FaMapMarkerAlt />
+                  {neighborhoods.find((n) => n.idneighborhood === product.user_idneighborhood)?.name ||
+                    "Barrio desconocido"}
+                </span>
+                <span className="date">{new Date(product.created_at).toLocaleDateString()}</span>
+              </div>
+              <div className="product-contact">
+                <FaPhone /> Contacto: {product.contact}
+              </div>
+              {isOwner && (
+                <div className="product-actions">
+                  <button onClick={() => handleDeleteProduct(product.idbusiness)} className="btn-delete">
+                    <FaTrash /> Eliminar
+                  </button>
+                </div>
+              )}
             </div>
-          ))}
-        </div>
-      ) : (
-        <div className="no-products">
-          <p>No hay productos publicados en este momento.</p>
-        </div>
-      )}
+          )
+        })}
+      </div>
 
-      {/* 🔹 Modal para publicar un nuevo producto */}
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2>📦 Publicar Nuevo Producto</h2>
-            <form onSubmit={handleSubmit}>
-              <label><FaTag /> Nombre del producto:</label>
-              <input
-                type="text"
-                name="name"
-                value={productData.name}
-                onChange={handleChange}
-                required
-              />
-
-              <label>📄 Descripción:</label>
-              <textarea
-                name="description"
-                value={productData.description}
-                onChange={handleChange}
-                required
-              />
-
-              <label><FaDollarSign /> Precio:</label>
-              <input
-                type="number"
-                name="price"
-                value={productData.price}
-                onChange={handleChange}
-                required
-              />
-
-              <label><FaFileImage /> Imágenes:</label>
-              <input
-                type="file"
-                name="image"
-                onChange={handleFileChange}
-              />
-
-              <button className="btn-submit" type="submit">📢 PUBLICAR PRODUCTO</button>
-              <button className="btn-cancel" type="button" onClick={() => setShowModal(false)}>Cancelar</button>
-            </form>
+      {selectedImage && (
+        <div className="image-modal-overlay" onClick={handleCloseImageModal}>
+          <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-modal" onClick={handleCloseImageModal}>
+              <FaTimes />
+            </button>
+            <img
+              src={selectedImage[currentImageIndex] || "/placeholder.svg"}
+              alt={`Imagen ${currentImageIndex + 1} del producto`}
+              className="full-size-image"
+            />
+            {selectedImage.length > 1 && (
+              <div className="image-navigation">
+                <button onClick={handlePrevImage} className="nav-button prev">
+                  <FaChevronLeft />
+                </button>
+                <span className="image-counter">
+                  {currentImageIndex + 1} / {selectedImage.length}
+                </span>
+                <button onClick={handleNextImage} className="nav-button next">
+                  <FaChevronRight />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -219,3 +242,4 @@ const Marketplace = () => {
 }
 
 export default Marketplace
+

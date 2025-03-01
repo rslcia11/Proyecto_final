@@ -11,6 +11,9 @@ import Denuncias from "./pages/Denuncias";
 import TermsAndConditions from './components/TermsAndConditions';
 import MissionModal from './components/MissionModal';
 import TeamSection from "./components/TeamSection";
+import CreateProduct from "./pages/CreateProduct";
+import EditProduct from "./pages/EditProduct";
+import CrearDenuncia from "./pages/CrearDenuncia";
 
 
 function App() {
@@ -28,6 +31,9 @@ function App() {
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/mission" element={<MissionModal />} />
         <Route path="/team" element={<TeamSection />} />
+        <Route path="/create-product" element={<CreateProduct />} />
+        <Route path="/edit-product/:id" element={<EditProduct />} />
+        <Route path="/crear-denuncia" element={<CrearDenuncia />} />
       </Routes>
     </Router>
   );

@@ -1,18 +1,19 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
 import {
-  FaExclamationTriangle,
   FaMapMarkerAlt,
-  FaCamera,
-  FaVideo,
   FaSearch,
   FaPlus,
-  FaComments,
-  FaThumbsUp,
   FaTimes,
   FaChevronLeft,
   FaChevronRight,
+  FaExclamationTriangle,
+  FaCalendarAlt,
+  FaCamera,
+  FaExclamationCircle,
+  FaTrash,
 } from "react-icons/fa"
 import "./Denuncias.css"
 
@@ -20,20 +21,9 @@ const Denuncias = () => {
   const [denuncias, setDenuncias] = useState([])
   const [neighborhoods, setNeighborhoods] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
-  const [showModal, setShowModal] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    post_type: "complaint",
-    neighborhood_id: "",
-    image_urls: "",
-    video_url: "",
-  })
 
   useEffect(() => {
     fetchDenuncias()
@@ -72,120 +62,10 @@ const Denuncias = () => {
     }
   }
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }))
-  }
-
-  const handleImageChange = async (e) => {
-    const files = Array.from(e.target.files)
-    if (files.length === 0) return
-
-    setIsSubmitting(true)
-    const userToken = localStorage.getItem("userToken")
-
-    try {
-      const uploadPromises = files.map(async (file) => {
-        const formData = new FormData()
-        formData.append("file", file)
-
-        const response = await fetch("http://localhost:3000/upload", {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        })
-
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || `Error al subir ${file.name}`)
-        }
-
-        const data = await response.json()
-        return data.url
-      })
-
-      const imageUrls = await Promise.all(uploadPromises)
-
-      setFormData((prev) => ({
-        ...prev,
-        image_urls: imageUrls.join(","),
-      }))
-
-      alert("Imágenes subidas correctamente")
-    } catch (error) {
-      console.error("Error al subir las imágenes:", error)
-      alert(`Error al subir las imágenes: ${error.message}`)
-      e.target.value = ""
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    const userToken = localStorage.getItem("userToken")
-    const user = JSON.parse(localStorage.getItem("user"))
-
-    if (!userToken || !user) {
-      alert("Error: Usuario no autenticado.")
-      return
-    }
-
-    if (isSubmitting) {
-      alert("Por favor espere mientras se suben las imágenes.")
-      return
-    }
-
-    try {
-      const denunciaData = {
-        ...formData,
-        user_id: user.iduser,
-        image_urls: formData.image_urls || "",
-      }
-
-      const response = await fetch("http://localhost:3000/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${userToken}`,
-        },
-        body: JSON.stringify(denunciaData),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Error al crear la denuncia")
-      }
-
-      alert("Denuncia creada correctamente.")
-      setShowModal(false)
-      fetchDenuncias()
-
-      setFormData({
-        title: "",
-        description: "",
-        post_type: "complaint",
-        neighborhood_id: "",
-        image_urls: "",
-        video_url: "",
-      })
-    } catch (error) {
-      console.error("Error en la solicitud:", error)
-      alert(error.message || "Error al conectar con el servidor.")
-    }
-  }
-
   const filteredDenuncias = denuncias.filter(
     (denuncia) =>
-      denuncia.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      denuncia.description.toLowerCase().includes(searchTerm.toLowerCase()),
+      denuncia.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      denuncia.description?.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   const handleImageClick = (urls, index) => {
@@ -206,10 +86,38 @@ const Denuncias = () => {
     setCurrentImageIndex((prevIndex) => (prevIndex < selectedImage.length - 1 ? prevIndex + 1 : 0))
   }
 
+  const handleDeleteDenuncia = async (denunciaId) => {
+    if (!window.confirm("¿Estás seguro de que quieres eliminar esta denuncia?")) {
+      return
+    }
+
+    const userToken = localStorage.getItem("userToken")
+    try {
+      const response = await fetch(`http://localhost:3000/posts/${denunciaId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error("Error al eliminar la denuncia")
+      }
+
+      // Update the list of denuncias
+      setDenuncias(denuncias.filter((denuncia) => denuncia.id !== denunciaId))
+    } catch (error) {
+      console.error("Error al eliminar la denuncia:", error)
+      alert("No se pudo eliminar la denuncia. Por favor, inténtalo de nuevo.")
+    }
+  }
+
   return (
     <div className="denuncias-container">
       <header className="denuncias-header">
-        <h1>Denuncias de la Comunidad</h1>
+        <h1>
+          <FaExclamationTriangle /> Denuncias de la Comunidad
+        </h1>
         <p className="subtitle">Mantente informado sobre los problemas en tu comunidad</p>
       </header>
 
@@ -225,141 +133,73 @@ const Denuncias = () => {
         </div>
 
         {isAuthenticated ? (
-          <button className="btn-create" onClick={() => setShowModal(true)}>
+          <Link to="/crear-denuncia" className="btn-create">
             <FaPlus /> Crear Publicación
-          </button>
+          </Link>
         ) : (
-          <p className="warning-message">Inicia sesión para crear una denuncia.</p>
+          <p className="warning-message">
+            <FaExclamationCircle /> Inicia sesión para crear una denuncia.
+          </p>
         )}
       </div>
 
       <div className="denuncias-list">
-        {filteredDenuncias.map((denuncia) => (
-          <div key={denuncia.id} className="denuncia-card">
-            <div className="denuncia-header">
-              <h3>{denuncia.title}</h3>
-              <span className="date">{new Date(denuncia.created_at).toLocaleDateString()}</span>
-            </div>
-            <p className="denuncia-description">{denuncia.description}</p>
-            {denuncia.image_urls && (
-              <div
-                className={`denuncia-images-container ${denuncia.image_urls.split(",").length === 1 ? "single-image" : ""}`}
-              >
-                {denuncia.image_urls.split(",").map((url, index, array) => (
-                  <div key={index} className="denuncia-image-wrapper">
-                    <img
-                      src={url || "/placeholder.svg"}
-                      alt={`Imagen ${index + 1} de la denuncia`}
-                      className="denuncia-image"
-                      onClick={() => handleImageClick(denuncia.image_urls, index)}
-                    />
-                    {array.length > 1 && index === 0 && (
-                      <span className="denuncia-image-count">{array.length} imágenes</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-            <div className="denuncia-footer">
-              <span className="location">
-                <FaMapMarkerAlt />
-                {neighborhoods.find((n) => n.idneighborhood === denuncia.neighborhood_id)?.name || "Barrio desconocido"}
-              </span>
-              <div className="denuncia-actions">
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+        {filteredDenuncias.map((denuncia) => {
+          const currentUser = JSON.parse(localStorage.getItem("user"))
+          const isOwner = currentUser && currentUser.iduser === denuncia.user_id
 
-      {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close-modal" onClick={() => setShowModal(false)}>
-              <FaTimes />
-            </button>
-            <h2>Crear Nueva Denuncia</h2>
-            <form onSubmit={handleSubmit} className="crear-denuncia-form">
-              <div className="form-group">
-                <label htmlFor="title">
-                  <FaExclamationTriangle /> Título
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  required
-                  placeholder="Título de la denuncia"
-                />
+          return (
+            <div key={denuncia.id} className="denuncia-card">
+              <div className="denuncia-header">
+                <h3>
+                  <FaExclamationTriangle /> {denuncia.title}
+                </h3>
+                <span className="date">
+                  <FaCalendarAlt /> {new Date(denuncia.created_at).toLocaleDateString()}
+                </span>
               </div>
-              <div className="form-group">
-                <label htmlFor="description">Descripción</label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  required
-                  placeholder="Describe el problema o situación"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="neighborhood_id">
-                  <FaMapMarkerAlt /> Barrio
-                </label>
-                <select
-                  id="neighborhood_id"
-                  name="neighborhood_id"
-                  value={formData.neighborhood_id}
-                  onChange={handleChange}
-                  required
+              <p className="denuncia-description">{denuncia.description}</p>
+              {denuncia.image_urls && (
+                <div
+                  className={`denuncia-images-container ${
+                    denuncia.image_urls.split(",").length === 1 ? "single-image" : ""
+                  }`}
                 >
-                  <option value="">Selecciona el barrio</option>
-                  {neighborhoods.map((n) => (
-                    <option key={n.idneighborhood} value={n.idneighborhood}>
-                      {n.name}
-                    </option>
+                  {denuncia.image_urls.split(",").map((url, index, array) => (
+                    <div key={index} className="denuncia-image-wrapper">
+                      <img
+                        src={url || "/placeholder.svg"}
+                        alt={`Imagen ${index + 1} de la denuncia`}
+                        className="denuncia-image"
+                        onClick={() => handleImageClick(denuncia.image_urls, index)}
+                      />
+                      {array.length > 1 && index === 0 && (
+                        <span className="denuncia-image-count">
+                          <FaCamera /> {array.length} imágenes
+                        </span>
+                      )}
+                    </div>
                   ))}
-                </select>
+                </div>
+              )}
+              <div className="denuncia-footer">
+                <span className="location">
+                  <FaMapMarkerAlt />
+                  {neighborhoods.find((n) => n.idneighborhood === denuncia.neighborhood_id)?.name ||
+                    "Barrio desconocido"}
+                </span>
+                <div className="denuncia-actions">
+                  {isOwner && (
+                    <button onClick={() => handleDeleteDenuncia(denuncia.id)} className="btn-delete">
+                      <FaTrash /> Eliminar
+                    </button>
+                  )}
+                </div>
               </div>
-              <div className="form-group">
-                <label htmlFor="image_urls">
-                  <FaCamera /> Imágenes
-                </label>
-                <input
-                  type="file"
-                  id="image_urls"
-                  name="image_urls"
-                  multiple
-                  accept="image/*"
-                  onChange={handleImageChange}
-                />
-                {isSubmitting && <p className="upload-status">Subiendo imágenes...</p>}
-              </div>
-              <div className="form-group">
-                <label htmlFor="video_url">
-                  <FaVideo /> URL del Video
-                </label>
-                <input
-                  type="url"
-                  id="video_url"
-                  name="video_url"
-                  value={formData.video_url}
-                  onChange={handleChange}
-                  placeholder="URL del video (opcional)"
-                />
-              </div>
-              <div className="form-actions">
-                <button type="submit" className="btn-submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Subiendo..." : "Crear Denuncia"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+            </div>
+          )
+        })}
+      </div>
 
       {selectedImage && (
         <div className="image-modal-overlay" onClick={handleCloseImageModal}>
@@ -378,7 +218,7 @@ const Denuncias = () => {
                   <FaChevronLeft />
                 </button>
                 <span className="image-counter">
-                  {currentImageIndex + 1} / {selectedImage.length}
+                  <FaCamera /> {currentImageIndex + 1} / {selectedImage.length}
                 </span>
                 <button onClick={handleNextImage} className="nav-button next">
                   <FaChevronRight />

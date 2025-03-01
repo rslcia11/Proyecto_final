@@ -12,7 +12,8 @@ router.get('/:id', MarketplaceController.getProductById);
 
 // Ruta para crear un nuevo producto
 router.post('/', MarketplaceController.createProduct);
-router.post("/marketplace", upload.none(), createProduct);
+router.post("/marketplace", upload.none(), MarketplaceController.createProduct);  // ✅ Corregido
+
 // Ruta para actualizar un producto existente
 router.put('/:id', MarketplaceController.updateProduct);
 
@@ -20,5 +21,3 @@ router.put('/:id', MarketplaceController.updateProduct);
 router.delete('/:id', MarketplaceController.deleteProduct);
 
 module.exports = router;
-
-

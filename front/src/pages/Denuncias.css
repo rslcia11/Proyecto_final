@@ -1,21 +1,30 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+body {
+  font-family: "Roboto", Arial, sans-serif;
+}
+
 .denuncias-container {
   max-width: 800px;
   margin: 80px auto 0;
   padding: 20px;
-  font-family: Arial, sans-serif;
-}
-
-.denuncias-header {
-  text-align: center;
-  margin-bottom: 30px;
+  font-family: "Roboto", Arial, sans-serif;
 }
 
 .denuncias-header h1 {
+  font-weight: 700;
   color: #1877f2;
   margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.denuncias-header h1 svg {
+  margin-right: 10px;
 }
 
 .denuncias-header .subtitle {
+  font-weight: 300;
   color: #65676b;
 }
 
@@ -57,6 +66,7 @@
   font-weight: bold;
   display: flex;
   align-items: center;
+  text-decoration: none;
 }
 
 .btn-create:hover {
@@ -69,6 +79,12 @@
 
 .warning-message {
   color: #f02849;
+  display: flex;
+  align-items: center;
+}
+
+.warning-message svg {
+  margin-right: 5px;
 }
 
 .denuncias-list {
@@ -91,31 +107,28 @@
   margin-bottom: 10px;
 }
 
-.denuncia-user-info {
+.denuncia-header h3 {
+  margin: 0;
+  color: #1c1e21;
+  font-weight: 500;
   display: flex;
   align-items: center;
 }
 
-.user-icon {
-  color: #65676b;
+.denuncia-header h3 svg {
   margin-right: 8px;
-}
-
-.user-name {
-  font-weight: 600;
-  color: #050505;
-}
-
-.denuncia-title {
-  font-size: 1.2em;
-  margin-top: 0;
-  margin-bottom: 10px;
-  color: #1c1e21;
+  color: #1877f2;
 }
 
 .date {
-  color: #65676b;
-  font-size: 0.9em;
+  font-weight: bold;
+  color: #1877f2;
+  display: flex;
+  align-items: center;
+}
+
+.date svg {
+  margin-right: 5px;
 }
 
 .denuncia-description {
@@ -128,7 +141,7 @@
   flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 15px;
-  justify-content: center; /* Centrar las imágenes */
+  justify-content: center;
 }
 
 .denuncia-images-container.single-image {
@@ -136,18 +149,18 @@
 }
 
 .denuncia-image-wrapper {
-  flex: 0 1 calc(50% - 5px); /* Dos imágenes por fila por defecto */
+  flex: 0 1 calc(50% - 5px);
   max-width: calc(50% - 5px);
   position: relative;
   overflow: hidden;
   border-radius: 8px;
-  background-color: #f0f2f5; /* Fondo para imágenes transparentes */
+  background-color: #f0f2f5;
 }
 
 .denuncia-image {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Cambiado a contain para mostrar la imagen completa */
+  object-fit: contain;
   transition: transform 0.2s ease-in-out;
   cursor: pointer;
 }
@@ -156,68 +169,21 @@
   transform: scale(1.05);
 }
 
-/* Ajustes para diferentes números de imágenes */
-.denuncia-images-container:not(.single-image) .denuncia-image-wrapper:first-child:nth-last-child(2),
-.denuncia-images-container:not(.single-image)
-  .denuncia-image-wrapper:first-child:nth-last-child(2)
-  ~ .denuncia-image-wrapper {
-  flex-basis: calc(50% - 5px);
-  max-width: calc(50% - 5px);
-}
-
-.denuncia-images-container:not(.single-image) .denuncia-image-wrapper:first-child:nth-last-child(3),
-.denuncia-images-container:not(.single-image)
-  .denuncia-image-wrapper:first-child:nth-last-child(3)
-  ~ .denuncia-image-wrapper {
-  flex-basis: calc(33.333% - 7px);
-  max-width: calc(33.333% - 7px);
-}
-
-.denuncia-images-container:not(.single-image) .denuncia-image-wrapper:first-child:nth-last-child(n + 4),
-.denuncia-images-container:not(.single-image)
-  .denuncia-image-wrapper:first-child:nth-last-child(n + 4)
-  ~ .denuncia-image-wrapper {
-  flex-basis: calc(25% - 7.5px);
-  max-width: calc(25% - 7.5px);
-}
-
-/* Ajuste para dispositivos móviles */
-@media (max-width: 600px) {
-  .denuncia-image-wrapper {
-    flex-basis: 100% !important;
-    max-width: 100% !important;
-  }
-}
-
-/* Asegurar que las imágenes mantengan una proporción consistente */
-.denuncia-image-wrapper::before {
-  content: "";
-  display: block;
-  padding-top: 75%; /* Proporción 4:3 */
-}
-
-.denuncia-image-wrapper img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* Cambiado a contain para mostrar la imagen completa */
-}
-
-.denuncia-image-expand {
+.denuncia-image-count {
   position: absolute;
   bottom: 10px;
   right: 10px;
   background-color: rgba(0, 0, 0, 0.6);
   color: white;
   padding: 5px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 1.2em;
+  border-radius: 4px;
+  font-size: 12px;
   display: flex;
   align-items: center;
-  justify-content: center;
+}
+
+.denuncia-image-count svg {
+  margin-right: 5px;
 }
 
 .denuncia-footer {
@@ -238,117 +204,8 @@
 
 .denuncia-actions {
   display: flex;
-  gap: 10px;
-}
-
-.btn-action {
-  background: none;
-  border: none;
-  color: #65676b;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.btn-action:hover {
-  text-decoration: underline;
-}
-
-.btn-action svg {
-  margin-right: 5px;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-  position: relative;
-}
-
-.close-modal {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 1.5em;
-  cursor: pointer;
-  color: #65676b;
-}
-
-.crear-denuncia-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #1c1e21;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-  padding: 10px;
-  border: 1px solid #ccd0d5;
-  border-radius: 4px;
-  font-size: 1em;
-}
-
-.form-group textarea {
-  min-height: 100px;
-}
-
-.upload-status {
-  color: #1877f2;
-  margin-top: 5px;
-}
-
-.form-actions {
-  display: flex;
   justify-content: flex-end;
-}
-
-.btn-submit {
-  background-color: #1877f2;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.btn-submit:hover {
-  background-color: #166fe5;
-}
-
-.btn-submit:disabled {
-  background-color: #e4e6eb;
-  color: #bcc0c4;
-  cursor: not-allowed;
+  margin-top: 10px;
 }
 
 .image-modal-overlay {
@@ -376,7 +233,7 @@
 .full-size-image {
   max-width: 100%;
   max-height: 80vh;
-  object-fit: contain; /* Asegura que la imagen se muestre completa en el modal */
+  object-fit: contain;
 }
 
 .image-navigation {
@@ -408,9 +265,14 @@
 .image-counter {
   color: white;
   font-size: 14px;
+  display: flex;
+  align-items: center;
 }
 
-/* Ajustar el estilo del botón de cierre para el modal de imagen */
+.image-counter svg {
+  margin-right: 5px;
+}
+
 .image-modal-content .close-modal {
   position: absolute;
   top: 10px;
@@ -428,14 +290,10 @@
   background: rgba(0, 0, 0, 0.7);
 }
 
-/* Ajuste adicional para el contenedor de imágenes en el modal */
-.image-modal-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 90%;
-  height: 90%;
-  background-color: rgba(0, 0, 0, 0.8);
-  border-radius: 8px;
+@media (max-width: 600px) {
+  .denuncia-image-wrapper {
+    flex-basis: 100% !important;
+    max-width: 100% !important;
+  }
 }
 
